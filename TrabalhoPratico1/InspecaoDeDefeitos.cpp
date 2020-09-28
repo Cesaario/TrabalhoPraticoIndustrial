@@ -4,34 +4,6 @@
 
 HANDLE Timer_Inspecao_De_Defeitos;
 
-
-int AtualizarTempoDoTimer() {
-
-	LARGE_INTEGER tempo;
-	tempo.QuadPart = -10000000LL;
-
-	if (!SetWaitableTimer(Timer_Inspecao_De_Defeitos, &tempo, 0, NULL, NULL, 0))
-	{
-		printf("SetWaitableTimer failed (%d)\n", GetLastError());
-		return 2;
-	}
-}
-
-int SetupInspecaoDeDefeitos() {
-
-	LARGE_INTEGER tempo;
-	tempo.QuadPart = -10000000LL;
-
-	Timer_Inspecao_De_Defeitos = CreateWaitableTimer(NULL, TRUE, NULL);
-
-	if (Timer_Inspecao_De_Defeitos == NULL)
-	{
-		printf("CreateWaitableTimer failed (%d)\n", GetLastError());
-		return 1;
-	}
-	AtualizarTempoDoTimer();
-}
-
 DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
@@ -42,8 +14,6 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		WaitForSingleObject(Timer_Inspecao_De_Defeitos, INFINITE);
 		printf("%d\n", i);
 		i++;
-
-		AtualizarTempoDoTimer();
 	}
 
 	_endthreadex((DWORD)id);
