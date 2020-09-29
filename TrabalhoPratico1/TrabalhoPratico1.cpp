@@ -17,23 +17,25 @@ typedef unsigned* CAST_LPDWORD;
 #define ID_LEITURA_CAPTURA_DEFEITOS_TIRAS 2
 #define ID_CAPTURA_DADOS_PROCESSOS 3
 
+HANDLE Handle_Thread_Leitura_Sistema_Inspecao_Defeitos;
+HANDLE Handle_Thread_Captura_Defeitos_Tiras;
+HANDLE Handle_Thread_Captura_Dados_Processos;
+HANDLE Handle_Thread_Leitura_Teclado;
+
+HANDLE Evento_Finalizar_Inspecao_Defeitos;
+HANDLE Evento_Finalizar_Defeitos_Das_Tiras;
+HANDLE Evento_Finalizar_Dados_De_Processo;
+
 int main()
 {
-	HANDLE Handle_Thread_Leitura_Sistema_Inspecao_Defeitos;
-	HANDLE Handle_Thread_Captura_Defeitos_Tiras;
-	HANDLE Handle_Thread_Captura_Dados_Processos;
-	HANDLE Handle_Thread_Leitura_Teclado;
-
-	HANDLE Evento_Finalizar_Inspecao_Defeitos;
 
 	DWORD status, dwThreadID, dwExitCode;
 
-	//string str(L"aa");
-	//SetConsoleTitle(str.c_str());0
-
-	//SetupInspecaoDeDefeitos();
+	//TODO: Tratamento de erros.
 
 	Evento_Finalizar_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Inspecao_Defeitos");
+	Evento_Finalizar_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Defeitos_Das_Tiras");
+	Evento_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Dados_De_Processo");
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,
