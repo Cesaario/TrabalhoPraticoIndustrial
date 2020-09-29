@@ -13,7 +13,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Dados_De_Processo, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
-	printf("Finalizando thread de captura de dados de processo...");
+	printf("Finalizando thread de captura de dados de processo...\n");
 
 	_endthreadex((DWORD)id);
 	return id;

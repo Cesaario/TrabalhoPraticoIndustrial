@@ -13,7 +13,7 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
-	printf("Finalizando thread de inspeção de defeitos...");
+	printf("Finalizando thread de inspeção de defeitos...\n");
 
 	_endthreadex((DWORD)id);
 	return id;
