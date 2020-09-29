@@ -5,12 +5,15 @@
 DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
+	DWORD resultadoEvento;
 
-	int i = 0;
-	while (i < 100000) {
-		//printf("%d\n", i);
-		i++;
-	}
+	HANDLE Evento_Finalizar_Dados_De_Processo = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Dados_De_Processo");
+
+	do {
+		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Dados_De_Processo, 0);
+	} while (resultadoEvento == WAIT_OBJECT_0);
+
+	printf("Finalizando thread de captura de dados de processo...\n");
 
 	_endthreadex((DWORD)id);
 	return id;
