@@ -25,17 +25,27 @@ HANDLE Handle_Thread_Leitura_Teclado;
 HANDLE Evento_Finalizar_Inspecao_Defeitos;
 HANDLE Evento_Finalizar_Defeitos_Das_Tiras;
 HANDLE Evento_Finalizar_Dados_De_Processo;
+HANDLE Evento_Finalizar_Exibicao_De_Defeitos;
+HANDLE Evento_Finalizar_Exibicao_De_Dados;
 
 int main()
 {
 
 	DWORD status, dwThreadID, dwExitCode;
 
+	STARTUPINFO si;
+	PROCESS_INFORMATION NewProcess;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+
 	//TODO: Tratamento de erros.
 
 	Evento_Finalizar_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Inspecao_Defeitos");
 	Evento_Finalizar_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Defeitos_Das_Tiras");
 	Evento_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Dados_De_Processo");
+	Evento_Finalizar_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Defeitos");
+	Evento_Finalizar_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Dados");
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,
@@ -76,6 +86,30 @@ int main()
 		0,
 		(CAST_LPDWORD)&dwThreadID
 	);
+
+	status = CreateProcess(
+		"..\\Debug\\ExibicaoDeDefeitos.exe", // Caminho do arquivo executável
+		NULL,								 // Apontador p/ parâmetros de linha de comando
+		NULL,								 // Apontador p/ descritor de segurança
+		NULL,								 // Idem, threads do processo
+		FALSE,								 // Herança de handles
+		CREATE_NEW_CONSOLE,					 // Flags de criação
+		NULL,								 // Herança do amniente de execução
+		"C:\\Windows",						 // Diretório do arquivo executável
+		&si,								 // lpStartUpInfo
+		&NewProcess);						 // lpProcessInformation
+
+	status = CreateProcess(
+		"..\\Debug\\ExibicaoDadosDeProcesso.exe", // Caminho do arquivo executável
+		NULL,									  // Apontador p/ parâmetros de linha de comando
+		NULL,									  // Apontador p/ descritor de segurança
+		NULL,									  // Idem, threads do processo
+		FALSE,									  // Herança de handles
+		CREATE_NEW_CONSOLE,						  // Flags de criação
+		NULL,									  // Herança do amniente de execução
+		"C:\\Windows",							  // Diretório do arquivo executável
+		&si,									  // lpStartUpInfo
+		&NewProcess);							  // lpProcessInformation
 
 	HANDLE Threads[4] = {
 		Handle_Thread_Leitura_Sistema_Inspecao_Defeitos,

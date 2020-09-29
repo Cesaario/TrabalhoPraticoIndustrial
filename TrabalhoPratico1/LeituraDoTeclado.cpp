@@ -15,6 +15,8 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Evento_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Inspecao_Defeitos");
 	HANDLE Evento_Finalizar_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Defeitos_Das_Tiras");
 	HANDLE Evento_Finalizar_Dados_De_Processo = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Dados_De_Processo");
+	HANDLE Evento_Finalizar_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Exibicao_De_Defeitos");
+	HANDLE Evento_Finalizar_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Exibicao_De_Dados");
 
 	//TODO: Tratamento de erros.
 
@@ -26,6 +28,8 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	ResetEvent(Evento_Finalizar_Inspecao_Defeitos);
 	ResetEvent(Evento_Finalizar_Defeitos_Das_Tiras);
 	ResetEvent(Evento_Finalizar_Dados_De_Processo);
+	ResetEvent(Evento_Finalizar_Exibicao_De_Defeitos);
+	ResetEvent(Evento_Finalizar_Exibicao_De_Dados);
 	
 	printf("Finalizando thread the leitura de teclado\n");
 
