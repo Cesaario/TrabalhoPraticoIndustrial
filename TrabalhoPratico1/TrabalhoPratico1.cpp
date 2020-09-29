@@ -8,6 +8,7 @@
 #include "InspecaoDeDefeitos.h"
 #include "CapturaDefeitosDasTiras.h"
 #include "CapturaDadosDeProcessos.h"
+#include "LeituraDoTeclado.h"
 
 typedef unsigned (WINAPI* CAST_FUNCTION)(LPVOID);
 typedef unsigned* CAST_LPDWORD;
@@ -21,13 +22,28 @@ int main()
 	HANDLE Handle_Thread_Leitura_Sistema_Inspecao_Defeitos;
 	HANDLE Handle_Thread_Captura_Defeitos_Tiras;
 	HANDLE Handle_Thread_Captura_Dados_Processos;
+	HANDLE Handle_Thread_Leitura_Teclado;
+
+	HANDLE Evento_Finalizar_Inspecao_Defeitos;
 
 	DWORD status, dwThreadID, dwExitCode;
 
 	//string str(L"aa");
 	//SetConsoleTitle(str.c_str());0
 
-	SetupInspecaoDeDefeitos();
+	//SetupInspecaoDeDefeitos();
+
+	Evento_Finalizar_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Inspecao_Defeitos");
+
+	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
+		NULL,
+		0,
+		(CAST_FUNCTION)Thread_Leitura_Teclado,
+		(void*)
+		ID_CAPTURA_DADOS_PROCESSOS,
+		0,
+		(CAST_LPDWORD)&dwThreadID
+	);
 
 	Handle_Thread_Leitura_Sistema_Inspecao_Defeitos = (HANDLE)_beginthreadex(
 		NULL,
@@ -59,16 +75,26 @@ int main()
 		(CAST_LPDWORD)&dwThreadID
 	);
 
-	status = WaitForSingleObject(Handle_Thread_Leitura_Sistema_Inspecao_Defeitos, INFINITE);
+	HANDLE Threads[4] = {
+		Handle_Thread_Leitura_Sistema_Inspecao_Defeitos,
+		Handle_Thread_Captura_Defeitos_Tiras,
+		Handle_Thread_Captura_Dados_Processos,
+		Handle_Thread_Leitura_Teclado
+	};
+
+	status = WaitForMultipleObjects(4, Threads, true, INFINITE);
 
 	if (status != WAIT_OBJECT_0) {
-		printf("Erro em WaitForSingleObject! Codigo = %d\n", GetLastError());
+		printf("Erro em WaitForMultipleObjects! Codigo = %d\n", GetLastError());
 		return 0;
 	}
 
-	GetExitCodeThread(Handle_Thread_Leitura_Sistema_Inspecao_Defeitos, &dwExitCode);
-	printf("Thread de leitura do sistema de inspeção de defeitos finalizou: codigo=%d\n", dwExitCode);
-	CloseHandle(Handle_Thread_Leitura_Sistema_Inspecao_Defeitos);	// apaga referência ao objeto
+	printf("Finalizando...");
+
+	CloseHandle(Handle_Thread_Leitura_Sistema_Inspecao_Defeitos);
+	CloseHandle(Handle_Thread_Captura_Defeitos_Tiras);
+	CloseHandle(Handle_Thread_Captura_Dados_Processos);
+	CloseHandle(Handle_Thread_Leitura_Teclado);
 
 	return 0;
 }

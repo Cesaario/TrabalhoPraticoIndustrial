@@ -6,11 +6,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
 
-	int i = 0;
-	while (i < 100000) {
-		//printf("%d\n", i);
-		i++;
-	}
+	printf("Fechando captura dados processos\n");
 
 	_endthreadex((DWORD)id);
 	return id;
