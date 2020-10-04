@@ -16,7 +16,7 @@ int main()
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Exibicao_De_Dados, INFINITE);
-		printf("Executando...\n");
+		//printf("Executando...\n");
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Exibicao_De_Dados, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 

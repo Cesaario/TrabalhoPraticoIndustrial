@@ -26,6 +26,9 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Evento_Desbloquear_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Desbloquear_Exibicao_De_Defeitos");
 	HANDLE Evento_Desbloquear_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Desbloquear_Exibicao_De_Dados");
 
+	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
+	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
+
 	bool Estado_Inspecao_Defeitos = DESBLOQUEADA;
 	bool Estado_Defeitos_Das_Tiras = DESBLOQUEADA;
 	bool Estado_Dados_De_Processo = DESBLOQUEADA;
@@ -79,6 +82,9 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	SetEvent(Evento_Desbloquear_Dados_De_Processo);
 	SetEvent(Evento_Desbloquear_Exibicao_De_Defeitos);
 	SetEvent(Evento_Desbloquear_Exibicao_De_Dados);
+
+	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
+	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 	
 	printf("Finalizando thread the leitura de teclado\n");
 

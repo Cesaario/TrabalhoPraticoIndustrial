@@ -12,7 +12,7 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Defeitos_Das_Tiras, INFINITE);
-		printf("Executando...\n");
+		//printf("Executando...\n");
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Defeitos_Das_Tiras, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 

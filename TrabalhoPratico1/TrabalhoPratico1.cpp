@@ -36,7 +36,7 @@ HANDLE Evento_Desbloquear_Exibicao_De_Defeitos;
 HANDLE Evento_Desbloquear_Exibicao_De_Dados;
 
 HANDLE Semaforo_Acesso_Lista_Circular_Livres;
-HANDLE Semaforo_Acesso_Lista_Circular_Bloqueados;
+HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
 
 int main()
 {
@@ -63,7 +63,8 @@ int main()
 	Evento_Desbloquear_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Defeitos");
 	Evento_Desbloquear_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Dados");
 
-	Semaforo_Acesso_Lista_Circular_Livres = CreateSemaphore(NULL, 200, )
+	Semaforo_Acesso_Lista_Circular_Livres = CreateSemaphore(NULL, TAMANHO_LISTA, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Livres");
+	Semaforo_Acesso_Lista_Circular_Ocupados = CreateSemaphore(NULL, 0, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Ocupados");
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,
