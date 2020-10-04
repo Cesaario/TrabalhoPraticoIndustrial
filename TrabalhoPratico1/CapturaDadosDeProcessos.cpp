@@ -11,6 +11,8 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 	HANDLE Evento_Desbloquear_Dados_De_Processo = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Dados_De_Processo");
 
 	do {
+		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
+		printf("Executando...\n");
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Dados_De_Processo, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 

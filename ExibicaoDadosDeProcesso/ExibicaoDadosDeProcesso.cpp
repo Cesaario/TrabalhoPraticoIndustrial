@@ -12,8 +12,11 @@ int main()
 	DWORD resultadoEvento;
 
 	HANDLE Evento_Finalizar_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Exibicao_De_Dados");
+	HANDLE Evento_Desbloquear_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Exibicao_De_Dados");
 
 	do {
+		WaitForSingleObject(Evento_Desbloquear_Exibicao_De_Dados, INFINITE);
+		printf("Executando...\n");
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Exibicao_De_Dados, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 

@@ -8,8 +8,11 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 	DWORD resultadoEvento;
 
 	HANDLE Evento_Finalizar_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Defeitos_Das_Tiras");
+	HANDLE Evento_Desbloquear_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Defeitos_Das_Tiras");
 
 	do {
+		WaitForSingleObject(Evento_Desbloquear_Defeitos_Das_Tiras, INFINITE);
+		printf("Executando...\n");
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Defeitos_Das_Tiras, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 

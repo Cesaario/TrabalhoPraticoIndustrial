@@ -10,12 +10,6 @@
 
 int tecla = 0;
 
-bool Estado_Inspecao_Defeitos = DESBLOQUEADA;
-bool Estado_Defeitos_Das_Tiras = DESBLOQUEADA;
-bool Estado_Dados_De_Processo = DESBLOQUEADA;
-bool Estado_Exibicao_De_Defeitos = DESBLOQUEADA;
-bool Estado_Exibicao_De_Dados = DESBLOQUEADA;
-
 DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
@@ -32,6 +26,12 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Evento_Desbloquear_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Desbloquear_Exibicao_De_Defeitos");
 	HANDLE Evento_Desbloquear_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Desbloquear_Exibicao_De_Dados");
 
+	bool Estado_Inspecao_Defeitos = DESBLOQUEADA;
+	bool Estado_Defeitos_Das_Tiras = DESBLOQUEADA;
+	bool Estado_Dados_De_Processo = DESBLOQUEADA;
+	bool Estado_Exibicao_De_Defeitos = DESBLOQUEADA;
+	bool Estado_Exibicao_De_Dados = DESBLOQUEADA;
+
 	//TODO: Tratamento de erros.
 
 	do{
@@ -40,8 +40,26 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 		switch (tecla) {
 		case 'i':
 			printf("Alternando tarefa de inspeção de defeitos...\n");
-			AlternarEvento(Evento_Desbloquear_Inspecao_Defeitos, Estado_Inspecao_Defeitos);
+			AlternarEvento(Evento_Desbloquear_Inspecao_Defeitos, &Estado_Inspecao_Defeitos);
 			break;
+		case 'd':
+			printf("Alternando tarefa de defeitos das tiras...\n");
+			AlternarEvento(Evento_Desbloquear_Defeitos_Das_Tiras, &Estado_Defeitos_Das_Tiras);
+			break;
+		case 'e':
+			printf("Alternando tarefa de dados de processo...\n");
+			AlternarEvento(Evento_Desbloquear_Dados_De_Processo, &Estado_Dados_De_Processo);
+			break;
+		case 'a':
+			printf("Alternando tarefa de exibição de defeitos...\n");
+			AlternarEvento(Evento_Desbloquear_Exibicao_De_Defeitos, &Estado_Exibicao_De_Defeitos);
+			break;
+		case 'l':
+			printf("Alternando tarefa de exibição de dados...\n");
+			AlternarEvento(Evento_Desbloquear_Exibicao_De_Dados, &Estado_Exibicao_De_Dados);
+			break;
+		case 'c':
+			printf("Limpando...");
 		default:
 			printf("Comando não recohecido \n");
 		}
@@ -68,13 +86,13 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	return id;
 }
 
-void AlternarEvento(HANDLE evento, bool Estado_Atual) {
-	if (Estado_Atual == DESBLOQUEADA) {
+void AlternarEvento(HANDLE evento, bool* Estado_Atual) {
+	if (*Estado_Atual == DESBLOQUEADA) {
 		ResetEvent(evento);
-		Estado_Inspecao_Defeitos = BLOQUEADA;
+		*Estado_Atual = BLOQUEADA;
 	}
 	else {
 		SetEvent(evento);
-		Estado_Inspecao_Defeitos = DESBLOQUEADA;
+		*Estado_Atual = DESBLOQUEADA;
 	}
 }
