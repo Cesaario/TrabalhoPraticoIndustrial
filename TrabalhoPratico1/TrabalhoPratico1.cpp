@@ -9,6 +9,7 @@
 #include "CapturaDefeitosDasTiras.h"
 #include "CapturaDadosDeProcessos.h"
 #include "LeituraDoTeclado.h"
+#include "ListaCircular.h"
 
 typedef unsigned (WINAPI* CAST_FUNCTION)(LPVOID);
 typedef unsigned* CAST_LPDWORD;
@@ -34,6 +35,9 @@ HANDLE Evento_Desbloquear_Dados_De_Processo;
 HANDLE Evento_Desbloquear_Exibicao_De_Defeitos;
 HANDLE Evento_Desbloquear_Exibicao_De_Dados;
 
+HANDLE Semaforo_Acesso_Lista_Circular_Livres;
+HANDLE Semaforo_Acesso_Lista_Circular_Bloqueados;
+
 int main()
 {
 
@@ -58,6 +62,8 @@ int main()
 	Evento_Desbloquear_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Dados_De_Processo");
 	Evento_Desbloquear_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Defeitos");
 	Evento_Desbloquear_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Dados");
+
+	Semaforo_Acesso_Lista_Circular_Livres = CreateSemaphore(NULL, 200, )
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,
