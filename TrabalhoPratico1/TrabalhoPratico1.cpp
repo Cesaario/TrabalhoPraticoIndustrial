@@ -28,6 +28,12 @@ HANDLE Evento_Finalizar_Dados_De_Processo;
 HANDLE Evento_Finalizar_Exibicao_De_Defeitos;
 HANDLE Evento_Finalizar_Exibicao_De_Dados;
 
+HANDLE Evento_Desbloquear_Inspecao_Defeitos;
+HANDLE Evento_Desbloquear_Defeitos_Das_Tiras;
+HANDLE Evento_Desbloquear_Dados_De_Processo;
+HANDLE Evento_Desbloquear_Exibicao_De_Defeitos;
+HANDLE Evento_Desbloquear_Exibicao_De_Dados;
+
 int main()
 {
 
@@ -46,6 +52,12 @@ int main()
 	Evento_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Dados_De_Processo");
 	Evento_Finalizar_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Defeitos");
 	Evento_Finalizar_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Dados");
+
+	Evento_Desbloquear_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Inspecao_Defeitos");
+	Evento_Desbloquear_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Defeitos_Das_Tiras");
+	Evento_Desbloquear_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Dados_De_Processo");
+	Evento_Desbloquear_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Defeitos");
+	Evento_Desbloquear_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Dados");
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,

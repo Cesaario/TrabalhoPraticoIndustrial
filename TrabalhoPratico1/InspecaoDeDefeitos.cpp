@@ -8,8 +8,11 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 	DWORD resultadoEvento;
 
 	HANDLE Evento_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Inspecao_Defeitos");
+	HANDLE Evento_Desbloquear_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Inspecao_Defeitos");
 
 	do {
+		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
+		printf("Executando...\n");
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
