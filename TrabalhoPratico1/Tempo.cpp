@@ -9,31 +9,30 @@ std::string SerializarTempo(Tempo tempo) {
 }
 
 Tempo DesserializarTempo(std::string tempoString) {
-	std::istringstream iss(tempoString);
-	std::string token;
-
 	Tempo tempo;
 
-	int index = 0;
-	while (std::getline(iss, token, ':'))
-    {
-		std::stringstream campoInteiro(token);
+	std::string delim = ":";
+	auto start = 0U;
+	auto end = tempoString.find(delim);
+	int posicao = 0;
 
-		switch (index) {
+	while (end != std::string::npos)
+	{
+		switch (posicao) {
 		case 0:
-			campoInteiro >> tempo.hora;
+			tempo.hora = std::stoi(tempoString.substr(start, end - start));
 			break;
 		case 1:
-			campoInteiro >> tempo.minuto;
+			tempo.minuto = std::stoi(tempoString.substr(start, end - start));
 			break;
 		case 2:
-			campoInteiro >> tempo.segundo;
-			break;
-		case 3:
-			campoInteiro >> tempo.milissegundo;
+			tempo.segundo = std::stoi(tempoString.substr(start, end - start));
 			break;
 		}
-		index++;
-    }
+		start = end + delim.length();
+		end = tempoString.find(delim, start);
+		posicao++;
+	}
+	tempo.milissegundo = std::stoi(tempoString.substr(start, end));
 	return tempo;
 }
