@@ -3,12 +3,9 @@
 #include "Tempo.h"
 
 std::string SerializarTempo(Tempo tempo) {
-	std::stringstream resultado;
-	resultado << tempo.hora << ":";
-	resultado << tempo.minuto << ":";
-	resultado << tempo.segundo << ":";
-	resultado << tempo.milissegundo;
-	return resultado.str();
+	char Tempo_Serializado[12];
+	sprintf(Tempo_Serializado, "%02d:%02d:%02d:%03d", tempo.hora, tempo.minuto, tempo.segundo, tempo.milissegundo);
+	return Tempo_Serializado;
 }
 
 Tempo DesserializarTempo(std::string tempoString) {
