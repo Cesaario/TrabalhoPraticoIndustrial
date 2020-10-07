@@ -1,6 +1,21 @@
 #include <string>
 #include <sstream>
+#include <time.h>
 #include "Tempo.h"
+
+Tempo GerarTempoAtual() {
+	Tempo tempo;
+
+	SYSTEMTIME time_windows;
+	GetSystemTime(&time_windows);
+
+	tempo.hora = time_windows.wHour;
+	tempo.minuto = time_windows.wMinute;
+	tempo.segundo = time_windows.wSecond;
+	tempo.milissegundo = time_windows.wMilliseconds;
+
+	return tempo;
+}
 
 std::string SerializarTempo(Tempo tempo) {
 	char Tempo_Serializado[12];

@@ -1,4 +1,5 @@
 #pragma once
+#include <windows.h>
 typedef struct Tempo {
 	int hora;
 	int minuto;
@@ -9,3 +10,5 @@ typedef struct Tempo {
 std::string SerializarTempo(Tempo tempo);
 
 Tempo DesserializarTempo(std::string tempoString);
+
+Tempo GerarTempoAtual();
