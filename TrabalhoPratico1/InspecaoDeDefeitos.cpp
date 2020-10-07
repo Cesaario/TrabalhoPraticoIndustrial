@@ -17,18 +17,27 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
+	HANDLE Semaforo_Acesso_Lista_Circular_Cheia = OpenSemaphore(SYNCHRONIZE, false, "Semaforo_Acesso_Lista_Circular_Cheia");
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
-		
+		Sleep(10);
+
 		std::string mensagem = "batata";
-		WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, INFINITE);
+
+		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
+
+		if (Status_Wait_Lista_Livre == WAIT_TIMEOUT) {
+			printf("Lista circular cheia!!!\n");
+			WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Cheia, INFINITE);
+			continue;
+		}
+
 		Lista_Circular_Memoria[GetPosicaoLivre()] = mensagem;
 		printf("Adicionado em %d\n", GetPosicaoLivre());
 		IncrementarPosicaoLivre();
 		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
-		Sleep(10);
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 

@@ -28,6 +28,7 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
+	HANDLE Semaforo_Acesso_Lista_Circular_Cheia = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Cheia");
 
 	bool Estado_Inspecao_Defeitos = DESBLOQUEADA;
 	bool Estado_Defeitos_Das_Tiras = DESBLOQUEADA;
@@ -85,6 +86,7 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
+	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Cheia, 1, NULL);
 	
 	printf("Finalizando thread the leitura de teclado\n");
 
