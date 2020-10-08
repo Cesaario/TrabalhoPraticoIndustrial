@@ -10,7 +10,6 @@ DadosProcesso GerarDadosProcesso() {
 	DadosProcesso dados;
 
 	srand(time(NULL));
-
 	dados.numero = Numero_Dado_Processo;
 	dados.tipo = 22;
 	dados.cadeira = rand() % 6 + 1;

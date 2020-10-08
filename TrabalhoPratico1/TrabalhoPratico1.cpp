@@ -10,6 +10,7 @@
 #include "CapturaDadosDeProcessos.h"
 #include "LeituraDoTeclado.h"
 #include "ListaCircular.h"
+#include <time.h>
 
 typedef unsigned (WINAPI* CAST_FUNCTION)(LPVOID);
 typedef unsigned* CAST_LPDWORD;
@@ -46,7 +47,6 @@ HANDLE Mutex_Acesso_Lista_circular;
 
 int main()
 {
-
 	DWORD status, dwThreadID, dwExitCode;
 
 	STARTUPINFO si;

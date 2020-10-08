@@ -15,6 +15,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 	HANDLE Evento_Finalizar_Dados_De_Processo = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Dados_De_Processo");
 	HANDLE Evento_Desbloquear_Dados_De_Processo = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Dados_De_Processo");
 
+	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	HANDLE Evento_Lista_Circular_Nao_Vazia = OpenEvent(SYNCHRONIZE, false, "Evento_Lista_Circular_Nao_Vazia");
 
@@ -33,11 +34,12 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 		WaitForSingleObject(Mutex_Acesso_Lista_circular, INFINITE);
 		
-		std::string Proxima_Mensagem_Da_Fila = Lista_Circular_Memoria[Ponteiro_Leitura_Dados];
+		std::string Proxima_Mensagem_Da_Fila = Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA];
 		DadosProcesso dados = DesserializarDadosProcesso(Proxima_Mensagem_Da_Fila);
 		if (dados.tipo == 22) {
-			Lista_Circular_Memoria[Ponteiro_Leitura_Dados] = "";
-			printf("Mensagem de dados lida!\n");
+			Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA] = "";
+			printf("Mensagem [TIPO 22] consumida! Pos: %d\n", Ponteiro_Leitura_Dados % TAMANHO_LISTA);
+			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 		}
 		else {
 			//A tarefa não corresponde ao tipo procurado, portanto, não vamos retirá-la.

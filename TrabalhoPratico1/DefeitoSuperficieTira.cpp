@@ -10,7 +10,6 @@ DefeitoTira GerarDefeitoTira() {
 	DefeitoTira defeito;
 
 	srand(time(NULL));
-
 	defeito.numero = Numero_Defeito_Tira;
 	defeito.tipo = 11;
 	defeito.cadeira = rand() % 6 + 1;

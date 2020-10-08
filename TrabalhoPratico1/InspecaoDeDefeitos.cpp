@@ -31,7 +31,7 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 		Sleep(1000);
 
-		std::string mensagem = ((rand() % 100 < 50) && 0) ? SerializarDefeitoTira(GerarDefeitoTira()) : SerializarDadosProcesso(GerarDadosProcesso());
+		std::string mensagem = ((rand() % 100 < 50)) ? SerializarDefeitoTira(GerarDefeitoTira()) : SerializarDadosProcesso(GerarDadosProcesso());
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
 
@@ -42,8 +42,8 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		}
 		WaitForSingleObject(Mutex_Acesso_Lista_circular, INFINITE);
 		Lista_Circular_Memoria[GetPosicaoLivre()] = mensagem;
+		std::cout << "Mensagem " << mensagem << " adicionada na posicao " << GetPosicaoLivre() << std::endl;
 		IncrementarPosicaoLivre();
-		std::cout << "Mensagem adicionada, evento pulsado!" << std::endl;
 
 		DadosProcesso teste = DesserializarDadosProcesso(mensagem);
 

@@ -19,7 +19,7 @@ std::string* ReferenciaListaCircular() {
 }
 
 int GetPosicaoLivre() {
-	return Posicao_Livre;
+	return Posicao_Livre % TAMANHO_LISTA;
 }
 
 void IncrementarPosicaoLivre() {
