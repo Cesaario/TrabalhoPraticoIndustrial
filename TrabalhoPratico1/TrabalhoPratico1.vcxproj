@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DadosDeProcesso.cpp" />
     <ClCompile Include="InspecaoDeDefeitos.cpp" />
     <ClCompile Include="CapturaDefeitosDasTiras.cpp" />
     <ClCompile Include="CapturaDadosDeProcessos.cpp" />
@@ -151,7 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RandomUtil.h" />
-    <ClInclude Include="DadosProcesso.h" />
+    <ClInclude Include="DadosDeProcesso.h" />
     <ClInclude Include="LeituraDoTeclado.h" />
     <ClInclude Include="ListaCircular.h" />
     <ClInclude Include="Tempo.h" />

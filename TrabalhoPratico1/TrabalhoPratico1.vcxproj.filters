@@ -45,6 +45,9 @@
     <ClCompile Include="RandomUtil.cpp">
       <Filter>Arquivos de Origem\Util</Filter>
     </ClCompile>
+    <ClCompile Include="DadosDeProcesso.cpp">
+      <Filter>Arquivos de Origem\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InspecaoDeDefeitos.h">
@@ -68,10 +71,10 @@
     <ClInclude Include="ListaCircular.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="DadosProcesso.h">
+    <ClInclude Include="RandomUtil.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="RandomUtil.h">
+    <ClInclude Include="DadosDeProcesso.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

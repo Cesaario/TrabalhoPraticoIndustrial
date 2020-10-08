@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <process.h>
 #include <string>
-#include "ListaCircular.h"
-#include "DefeitoSuperficieTira.h"
-#include "RandomUtil.h"
 #include <time.h>
 #include <iostream>
+#include "ListaCircular.h"
+#include "DefeitoSuperficieTira.h"
+#include "DadosDeProcesso.h"
+#include "RandomUtil.h"
 
 #define MENSAGEM_DEFEITO_SUPERFICIE_TIRA 1;
 #define MENSAGEM_DADOS_PROCESSO_LAMINAÇÃO 2;
@@ -25,9 +26,9 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
-		Sleep(10);
+		Sleep(1000);
 
-		std::string mensagem = SerializarDefeitoTira(GerarDefeitoTira());
+		std::string mensagem = ((rand() % 100 < 50)) ? SerializarDefeitoTira(GerarDefeitoTira()) : SerializarDadosProcesso(GerarDadosProcesso());
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
 
