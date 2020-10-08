@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include <string>
 typedef struct Tempo {
 	int hora;
 	int minuto;

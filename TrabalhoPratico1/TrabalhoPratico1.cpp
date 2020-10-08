@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN 
+#pragma warning(disable:4996)
 #include <windows.h>
 #include <process.h>
 #include <stdio.h>
@@ -17,6 +17,8 @@ typedef unsigned* CAST_LPDWORD;
 #define ID_LEITURA_SISTEMA_INSPECAO_DEFEITOS 1
 #define ID_LEITURA_CAPTURA_DEFEITOS_TIRAS 2
 #define ID_CAPTURA_DADOS_PROCESSOS 3
+
+#define WIN32_LEAN_AND_MEAN 
 
 HANDLE Handle_Thread_Leitura_Sistema_Inspecao_Defeitos;
 HANDLE Handle_Thread_Captura_Defeitos_Tiras;

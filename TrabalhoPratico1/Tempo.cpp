@@ -1,3 +1,4 @@
+#pragma warning(disable:4996)
 #include <string>
 #include <sstream>
 #include <time.h>
@@ -18,7 +19,7 @@ Tempo GerarTempoAtual() {
 }
 
 std::string SerializarTempo(Tempo tempo) {
-	char Tempo_Serializado[12];
+	char Tempo_Serializado[13];
 	sprintf(Tempo_Serializado, "%02d:%02d:%02d:%03d", tempo.hora, tempo.minuto, tempo.segundo, tempo.milissegundo);
 	return Tempo_Serializado;
 }

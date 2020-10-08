@@ -11,3 +11,9 @@ typedef struct DefeitoTira {
 	std::string id_foto;
 	Tempo tempo;
 } DefeitoTira;
+
+DefeitoTira GerarDefeitoTira();
+
+std::string SerializarDefeitoTira(DefeitoTira defeito);
+
+DefeitoTira DesserializarDefeitoTira(std::string defeitoString);

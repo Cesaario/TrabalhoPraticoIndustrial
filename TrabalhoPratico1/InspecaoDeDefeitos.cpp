@@ -3,6 +3,10 @@
 #include <process.h>
 #include <string>
 #include "ListaCircular.h"
+#include "DefeitoSuperficieTira.h"
+#include "RandomUtil.h"
+#include <time.h>
+#include <iostream>
 
 #define MENSAGEM_DEFEITO_SUPERFICIE_TIRA 1;
 #define MENSAGEM_DADOS_PROCESSO_LAMINAÇÃO 2;
@@ -23,7 +27,7 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 		Sleep(10);
 
-		std::string mensagem = "batata";
+		std::string mensagem = SerializarDefeitoTira(GerarDefeitoTira());
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
 
@@ -34,7 +38,8 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		}
 
 		Lista_Circular_Memoria[GetPosicaoLivre()] = mensagem;
-		printf("Adicionado em %d\n", GetPosicaoLivre());
+		//printf("Adicionado em %d: %s\n", GetPosicaoLivre(), mensagem);
+		std::cout << mensagem << std::endl;
 		IncrementarPosicaoLivre();
 		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
