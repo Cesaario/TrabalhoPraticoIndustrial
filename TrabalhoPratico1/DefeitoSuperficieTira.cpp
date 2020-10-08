@@ -51,7 +51,7 @@ std::string SerializarDefeitoTira(DefeitoTira defeito) {
 
 DefeitoTira DesserializarDefeitoTira(std::string defeitoString) {
 	DefeitoTira defeito;
-	if (defeitoString.size() != 45) {
+	if (defeitoString.size() != 36) {
 		defeito.tipo = 0;
 		return defeito;
 	}

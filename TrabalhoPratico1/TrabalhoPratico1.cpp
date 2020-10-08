@@ -43,7 +43,7 @@ HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
 HANDLE Semaforo_Acesso_Lista_Circular_Cheia;
 HANDLE Evento_Lista_Circular_Nao_Vazia;
 
-HANDLE Mutex_Acesso_Lista_circular;
+HANDLE Mutex_Acesso_Lista_Circular;
 
 int main()
 {
@@ -74,7 +74,7 @@ int main()
 	Semaforo_Acesso_Lista_Circular_Cheia = CreateSemaphore(NULL, 0, 1, "Semaforo_Acesso_Lista_Circular_Cheia");
 	Evento_Lista_Circular_Nao_Vazia = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Nao_Vazia");
 
-	Mutex_Acesso_Lista_circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_circular");
+	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,

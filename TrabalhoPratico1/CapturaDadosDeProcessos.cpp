@@ -19,7 +19,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	HANDLE Evento_Lista_Circular_Nao_Vazia = OpenEvent(SYNCHRONIZE, false, "Evento_Lista_Circular_Nao_Vazia");
 
-	HANDLE Mutex_Acesso_Lista_circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_circular");
+	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
@@ -32,7 +32,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 			continue;
 		}
 
-		WaitForSingleObject(Mutex_Acesso_Lista_circular, INFINITE);
+		WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
 		
 		std::string Proxima_Mensagem_Da_Fila = Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA];
 		DadosProcesso dados = DesserializarDadosProcesso(Proxima_Mensagem_Da_Fila);
@@ -47,7 +47,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		}
 
 		Ponteiro_Leitura_Dados++;
-		ReleaseMutex(Mutex_Acesso_Lista_circular);
+		ReleaseMutex(Mutex_Acesso_Lista_Circular);
 
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Dados_De_Processo, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
