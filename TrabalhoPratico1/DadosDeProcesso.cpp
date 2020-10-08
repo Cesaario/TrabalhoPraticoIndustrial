@@ -54,8 +54,12 @@ std::string SerializarDadosProcesso(DadosProcesso dados) {
 
 DadosProcesso DesserializarDadosProcesso(std::string dadosString) {
 	DadosProcesso dados;
+	if (dadosString.size() != 45) {
+		dados.tipo = 0;
+		return dados;
+	}
 
-	std::string delim = ":";
+	std::string delim = "/";
 	auto start = 0U;
 	auto end = dadosString.find(delim);
 	int posicao = 0;

@@ -27,6 +27,14 @@ std::string SerializarTempo(Tempo tempo) {
 Tempo DesserializarTempo(std::string tempoString) {
 	Tempo tempo;
 
+	if (tempoString.size() != 12) {
+		tempo.hora = 0;
+		tempo.minuto = 0;
+		tempo.segundo = 0;
+		tempo.milissegundo = 0;
+		return tempo;
+	}
+
 	std::string delim = ":";
 	auto start = 0U;
 	auto end = tempoString.find(delim);

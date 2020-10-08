@@ -52,8 +52,12 @@ std::string SerializarDefeitoTira(DefeitoTira defeito) {
 
 DefeitoTira DesserializarDefeitoTira(std::string defeitoString) {
 	DefeitoTira defeito;
+	if (defeitoString.size() != 45) {
+		defeito.tipo = 0;
+		return defeito;
+	}
 
-	std::string delim = ":";
+	std::string delim = "/";
 	auto start = 0U;
 	auto end = defeitoString.find(delim);
 	int posicao = 0;
