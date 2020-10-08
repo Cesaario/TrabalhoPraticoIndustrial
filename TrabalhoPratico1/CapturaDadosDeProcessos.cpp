@@ -17,7 +17,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
-	HANDLE Evento_Lista_Circular_Nao_Vazia = OpenEvent(SYNCHRONIZE, false, "Evento_Lista_Circular_Nao_Vazia");
+	HANDLE Evento_Lista_Circular_Contem_Dado_Processo = OpenEvent(SYNCHRONIZE, false, "Evento_Lista_Circular_Contem_Dado_Processo");
 
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
@@ -28,7 +28,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 		if (Status_Wait_Lista_Ocupada == WAIT_TIMEOUT) {
 			printf("Lista circular vazia!!!\n");
-			WaitForSingleObject(Evento_Lista_Circular_Nao_Vazia, INFINITE);
+			WaitForSingleObject(Evento_Lista_Circular_Contem_Dado_Processo, INFINITE);
 			continue;
 		}
 

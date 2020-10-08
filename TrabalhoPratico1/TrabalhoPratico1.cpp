@@ -41,7 +41,8 @@ HANDLE Evento_Desbloquear_Exibicao_De_Dados;
 HANDLE Semaforo_Acesso_Lista_Circular_Livres;
 HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
 HANDLE Semaforo_Acesso_Lista_Circular_Cheia;
-HANDLE Evento_Lista_Circular_Nao_Vazia;
+HANDLE Evento_Lista_Circular_Contem_Dado_Processo;
+HANDLE Evento_Lista_Circular_Contem_Defeito;
 
 HANDLE Mutex_Acesso_Lista_Circular;
 
@@ -72,7 +73,8 @@ int main()
 	Semaforo_Acesso_Lista_Circular_Livres = CreateSemaphore(NULL, TAMANHO_LISTA, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Livres");
 	Semaforo_Acesso_Lista_Circular_Ocupados = CreateSemaphore(NULL, 0, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	Semaforo_Acesso_Lista_Circular_Cheia = CreateSemaphore(NULL, 0, 1, "Semaforo_Acesso_Lista_Circular_Cheia");
-	Evento_Lista_Circular_Nao_Vazia = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Nao_Vazia");
+	Evento_Lista_Circular_Contem_Dado_Processo = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Dado_Processo");
+	Evento_Lista_Circular_Contem_Defeito = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Defeito");
 
 	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
 

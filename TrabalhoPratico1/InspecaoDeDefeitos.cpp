@@ -23,7 +23,8 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	HANDLE Semaforo_Acesso_Lista_Circular_Cheia = OpenSemaphore(SYNCHRONIZE, false, "Semaforo_Acesso_Lista_Circular_Cheia");
-	HANDLE Evento_Lista_Circular_Nao_Vazia = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Nao_Vazia");
+	HANDLE Evento_Lista_Circular_Contem_Defeito = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Defeito");
+	HANDLE Evento_Lista_Circular_Contem_Dado_Processo = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Dado_Processo");
 
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
@@ -31,7 +32,16 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 		Sleep(1000);
 
-		std::string mensagem = ((rand() % 100 < 50)) ? SerializarDefeitoTira(GerarDefeitoTira()) : SerializarDadosProcesso(GerarDadosProcesso());
+		int tipo = 0;
+		std::string mensagem = "";
+		if ((rand() % 100 < 50)) {
+			mensagem = SerializarDefeitoTira(GerarDefeitoTira());
+			tipo = 11;
+		}
+		else {
+			mensagem = SerializarDadosProcesso(GerarDadosProcesso());
+			tipo = 22;
+		}
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
 
@@ -49,7 +59,13 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 		ReleaseMutex(Mutex_Acesso_Lista_Circular);
 
-		PulseEvent(Evento_Lista_Circular_Nao_Vazia);
+		if (tipo == 11) {
+			SetEvent(Evento_Lista_Circular_Contem_Defeito);
+		}
+		else if(tipo == 22) {
+			SetEvent(Evento_Lista_Circular_Contem_Dado_Processo);
+		}
+
 		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
