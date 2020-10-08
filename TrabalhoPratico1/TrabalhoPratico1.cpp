@@ -40,6 +40,9 @@ HANDLE Evento_Desbloquear_Exibicao_De_Dados;
 HANDLE Semaforo_Acesso_Lista_Circular_Livres;
 HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
 HANDLE Semaforo_Acesso_Lista_Circular_Cheia;
+HANDLE Semaforo_Acesso_Lista_Circular_Nao_Vazia;
+
+HANDLE Mutex_Acesso_Lista_circular;
 
 int main()
 {
@@ -69,6 +72,9 @@ int main()
 	Semaforo_Acesso_Lista_Circular_Livres = CreateSemaphore(NULL, TAMANHO_LISTA, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Livres");
 	Semaforo_Acesso_Lista_Circular_Ocupados = CreateSemaphore(NULL, 0, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	Semaforo_Acesso_Lista_Circular_Cheia = CreateSemaphore(NULL, 0, 1, "Semaforo_Acesso_Lista_Circular_Cheia");
+	Semaforo_Acesso_Lista_Circular_Nao_Vazia = CreateSemaphore(NULL, 0, 2, "Semaforo_Acesso_Lista_Circular_Nao_Vazia");
+
+	Mutex_Acesso_Lista_circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_circular");
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,

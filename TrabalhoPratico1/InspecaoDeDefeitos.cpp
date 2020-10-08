@@ -23,12 +23,15 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	HANDLE Semaforo_Acesso_Lista_Circular_Cheia = OpenSemaphore(SYNCHRONIZE, false, "Semaforo_Acesso_Lista_Circular_Cheia");
+	HANDLE Semaforo_Acesso_Lista_Circular_Nao_Vazia = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Nao_Vazia");
+
+	HANDLE Mutex_Acesso_Lista_circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_circular");
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 		Sleep(1000);
 
-		std::string mensagem = ((rand() % 100 < 50)) ? SerializarDefeitoTira(GerarDefeitoTira()) : SerializarDadosProcesso(GerarDadosProcesso());
+		std::string mensagem = ((rand() % 100 < 50) && 0) ? SerializarDefeitoTira(GerarDefeitoTira()) : SerializarDadosProcesso(GerarDadosProcesso());
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
 
@@ -37,11 +40,16 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 			WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Cheia, INFINITE);
 			continue;
 		}
-
+		WaitForSingleObject(Mutex_Acesso_Lista_circular, INFINITE);
 		Lista_Circular_Memoria[GetPosicaoLivre()] = mensagem;
-		//printf("Adicionado em %d: %s\n", GetPosicaoLivre(), mensagem);
-		std::cout << mensagem << std::endl;
 		IncrementarPosicaoLivre();
+		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Nao_Vazia, 2, NULL);
+
+		DadosProcesso teste = DesserializarDadosProcesso(mensagem);
+		std::cout << teste.tipo << std::endl;
+
+		ReleaseMutex(Mutex_Acesso_Lista_circular);
+
 		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
