@@ -23,7 +23,7 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	HANDLE Semaforo_Acesso_Lista_Circular_Cheia = OpenSemaphore(SYNCHRONIZE, false, "Semaforo_Acesso_Lista_Circular_Cheia");
-	HANDLE Semaforo_Acesso_Lista_Circular_Nao_Vazia = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Nao_Vazia");
+	HANDLE Evento_Lista_Circular_Nao_Vazia = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Nao_Vazia");
 
 	HANDLE Mutex_Acesso_Lista_circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_circular");
 
@@ -43,13 +43,13 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		WaitForSingleObject(Mutex_Acesso_Lista_circular, INFINITE);
 		Lista_Circular_Memoria[GetPosicaoLivre()] = mensagem;
 		IncrementarPosicaoLivre();
-		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Nao_Vazia, 2, NULL);
+		std::cout << "Mensagem adicionada, evento pulsado!" << std::endl;
 
 		DadosProcesso teste = DesserializarDadosProcesso(mensagem);
-		std::cout << teste.tipo << std::endl;
 
 		ReleaseMutex(Mutex_Acesso_Lista_circular);
 
+		PulseEvent(Evento_Lista_Circular_Nao_Vazia);
 		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
 		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
