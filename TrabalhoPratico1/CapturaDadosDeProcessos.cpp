@@ -5,6 +5,9 @@
 #include "ListaCircular.h"
 #include "DadosDeProcesso.h"
 
+#define GREEN   FOREGROUND_GREEN | FOREGROUND_INTENSITY
+#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
+
 int Ponteiro_Leitura_Dados = 0;
 
 DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
@@ -22,6 +25,9 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
+	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
+	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
+
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
 		
@@ -37,7 +43,12 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 		if (dados.tipo == 22) {
 			Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA] = "";
+
+			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+			SetConsoleTextAttribute(Handle_Console, GREEN);
 			printf("Mensagem [TIPO 22] consumida! Pos: %d\n", Ponteiro_Leitura_Dados % TAMANHO_LISTA);
+			ReleaseMutex(Mutex_Acesso_Console);
+
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
 		}
@@ -52,7 +63,10 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Dados_De_Processo, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
+	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+	SetConsoleTextAttribute(Handle_Console, YELLOW);
 	printf("Finalizando thread de captura de dados de processo...\n");
+	ReleaseMutex(Mutex_Acesso_Console);
 
 	_endthreadex((DWORD)id);
 	return id;

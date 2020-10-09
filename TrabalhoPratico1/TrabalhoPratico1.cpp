@@ -47,6 +47,12 @@ HANDLE Evento_Lista_Circular_Contem_Dado_Processo;
 HANDLE Evento_Lista_Circular_Contem_Defeito;
 
 HANDLE Mutex_Acesso_Lista_Circular;
+HANDLE Mutex_Acesso_Console;
+
+HANDLE Handle_Console;
+
+#define WHITE   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE
+#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
 
 int main()
 {
@@ -81,6 +87,9 @@ int main()
 	Evento_Limpar_Janela = CreateEvent(NULL, FALSE, FALSE, "Evento_Limpar_Janela");
 
 	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
+	Mutex_Acesso_Console = CreateMutex(NULL, FALSE, "Mutex_Acesso_Console");
+
+	Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,
@@ -160,7 +169,10 @@ int main()
 		return 0;
 	}
 
+	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+	SetConsoleTextAttribute(Handle_Console, YELLOW);
 	printf("Finalizando...");
+	ReleaseMutex(Mutex_Acesso_Console);
 
 	CloseHandle(Handle_Thread_Sistema_Inspecao_Defeitos);
 	CloseHandle(Handle_Thread_Captura_Defeitos_Tiras);
@@ -189,5 +201,6 @@ int main()
 
 	CloseHandle(Mutex_Acesso_Lista_Circular);
 
+	SetConsoleTextAttribute(Handle_Console, WHITE);
 	return 0;
 }

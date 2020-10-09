@@ -25,7 +25,7 @@ std::string SerializarTempo(Tempo tempo) {
 	sprintf(Tempo_Serializado, "%02d:%02d:%02d:%03d", tempo.hora, tempo.minuto, tempo.segundo, tempo.milissegundo);
 	return Tempo_Serializado;
 }
-
+ 
 Tempo DesserializarTempo(std::string tempoString) {
 	Tempo tempo;
 
