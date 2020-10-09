@@ -26,16 +26,15 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
 		
 		int Status_Wait_Lista_Ocupada = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Ocupados, 0);
-
 		if (Status_Wait_Lista_Ocupada == WAIT_TIMEOUT) {
 			WaitForSingleObject(Evento_Lista_Circular_Contem_Dado_Processo, INFINITE);
 			continue;
 		}
 
 		WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
-		
 		std::string Proxima_Mensagem_Da_Fila = Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA];
 		DadosProcesso dados = DesserializarDadosProcesso(Proxima_Mensagem_Da_Fila);
+
 		if (dados.tipo == 22) {
 			Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA] = "";
 			printf("Mensagem [TIPO 22] consumida! Pos: %d\n", Ponteiro_Leitura_Dados % TAMANHO_LISTA);

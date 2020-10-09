@@ -29,8 +29,9 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
 	do {
-		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 		Sleep(100);
+
+		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 
 		int tipo = 0;
 		std::string mensagem = "";
@@ -44,16 +45,14 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		}
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
-
 		if (Status_Wait_Lista_Livre == WAIT_TIMEOUT) {
 			printf("Lista circular cheia!!!\n");
 			WaitForSingleObject(Evento_Lista_Circular_Nao_Cheia, INFINITE);
 			continue;
 		}
+
 		WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
-
 		std::string Mensagem_Atual = Lista_Circular_Memoria[GetPosicaoPonteiro()];;
-
 		while (Mensagem_Atual.size() != 0){
 			IncrementarPosicaoPonteiro();
 			Mensagem_Atual = Lista_Circular_Memoria[GetPosicaoPonteiro()];
@@ -62,9 +61,6 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		Lista_Circular_Memoria[GetPosicaoPonteiro()] = mensagem;
 		std::cout << "Mensagem " << mensagem << " adicionada na posicao " << GetPosicaoPonteiro() << std::endl;
 		IncrementarPosicaoPonteiro();
-
-		DadosProcesso teste = DesserializarDadosProcesso(mensagem);
-
 		ReleaseMutex(Mutex_Acesso_Lista_Circular);
 
 		if (tipo == 11) {

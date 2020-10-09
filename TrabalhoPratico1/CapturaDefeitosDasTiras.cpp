@@ -27,16 +27,15 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 		WaitForSingleObject(Evento_Desbloquear_Defeitos_Das_Tiras, INFINITE);
 		
 		int Status_Wait_Lista_Ocupada = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Ocupados, 0);
-
 		if (Status_Wait_Lista_Ocupada == WAIT_TIMEOUT) {
 			WaitForSingleObject(Evento_Lista_Circular_Contem_Defeito, INFINITE);
 			continue;
 		}
 
 		WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
-
 		std::string Proxima_Mensagem_Da_Fila = Lista_Circular_Memoria[Ponteiro_Leitura_Defeitos % TAMANHO_LISTA];
 		DefeitoTira defeito = DesserializarDefeitoTira(Proxima_Mensagem_Da_Fila);
+
 		if (defeito.tipo == 11) {
 			Lista_Circular_Memoria[Ponteiro_Leitura_Defeitos % TAMANHO_LISTA] = "";
 			printf("Mensagem [TIPO 11] consumida! Pos: %d\n", Ponteiro_Leitura_Defeitos % TAMANHO_LISTA);
