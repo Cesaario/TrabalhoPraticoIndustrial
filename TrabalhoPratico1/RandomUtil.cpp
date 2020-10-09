@@ -2,14 +2,14 @@
 #include <time.h>
 
 std::string GerarIdAleatorio(int tamanho) {
-	std::string random;
+	std::string Random_Id;
 	static const char caracteres[] =
 		"0123456789"
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	srand(time(NULL));
 
 	for (int i = 0; i < tamanho; ++i)
-		random += caracteres[rand() % (sizeof(caracteres) - 1)];
+		Random_Id += caracteres[rand() % (sizeof(caracteres) - 1)];
 
-	return random;
+	return Random_Id;
 }
