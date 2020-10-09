@@ -14,6 +14,12 @@ void IncrementarPosicaoPonteiro() {
 }
 
 void Print_Snapshot_Lista() {
+	for (int i = 0; i < 32; i++) printf("*");
+	printf(" SNAPSHOT LISTA CIRCULAR EM MEMORIA ");
+	for (int i = 0; i < 32; i++) printf("*");
+	printf("\n");
+	printf("\n");
+
 	for (int i = 0; i < TAMANHO_LISTA; i++) {
 		std::string mensagem = Lista_Circular_Memoria[i];
 		if (mensagem.size() == 0) {
@@ -26,5 +32,8 @@ void Print_Snapshot_Lista() {
 			printf("\n");
 		}
 	}
+	printf("\n");
+	printf("\n");
+	for (int i = 0; i < 100; i++) printf("*");
 	printf("\n");
 }
