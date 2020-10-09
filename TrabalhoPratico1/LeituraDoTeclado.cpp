@@ -63,7 +63,7 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 		case 'i':
 			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
 			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de inspe��o de defeitos...\n");
+			printf("Alternando tarefa de inspecao de defeitos...\n");
 			ReleaseMutex(Mutex_Acesso_Console);
 			AlternarEvento(Evento_Desbloquear_Inspecao_Defeitos, &Estado_Inspecao_Defeitos);
 			break;
@@ -84,14 +84,14 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 		case 'a':
 			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
 			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de exibi��o de defeitos...\n");
+			printf("Alternando tarefa de exibicao de defeitos...\n");
 			ReleaseMutex(Mutex_Acesso_Console);
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Defeitos, &Estado_Exibicao_De_Defeitos);
 			break;
 		case 'l':
 			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
 			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de exibi��o de dados...\n");
+			printf("Alternando tarefa de exibicao de dados...\n");
 			ReleaseMutex(Mutex_Acesso_Console);
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Dados, &Estado_Exibicao_De_Dados);
 			break;

@@ -53,7 +53,7 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
 		}
 		else {
-			//A tarefa n�o corresponde ao tipo procurado, portanto, n�o vamos retir�-la.
+			//A tarefa nao corresponde ao tipo procurado, portanto, nao vamos retira-la.
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 		}
 
