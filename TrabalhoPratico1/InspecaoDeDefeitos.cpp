@@ -33,7 +33,7 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	do {
-		Sleep(100);
+		Sleep(1000);
 
 		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 
