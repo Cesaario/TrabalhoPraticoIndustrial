@@ -167,5 +167,27 @@ int main()
 	CloseHandle(Handle_Thread_Captura_Dados_Processos);
 	CloseHandle(Handle_Thread_Leitura_Teclado);
 
+	CloseHandle(Evento_Finalizar_Inspecao_Defeitos);
+	CloseHandle(Evento_Finalizar_Defeitos_Das_Tiras);
+	CloseHandle(Evento_Finalizar_Dados_De_Processo);
+	CloseHandle(Evento_Finalizar_Exibicao_De_Defeitos);
+	CloseHandle(Evento_Finalizar_Exibicao_De_Dados);
+
+	CloseHandle(Evento_Desbloquear_Inspecao_Defeitos);
+	CloseHandle(Evento_Desbloquear_Defeitos_Das_Tiras);
+	CloseHandle(Evento_Desbloquear_Dados_De_Processo);
+	CloseHandle(Evento_Desbloquear_Exibicao_De_Defeitos);
+	CloseHandle(Evento_Desbloquear_Exibicao_De_Dados);
+
+	CloseHandle(Evento_Limpar_Janela);
+
+	CloseHandle(Semaforo_Acesso_Lista_Circular_Livres);
+	CloseHandle(Semaforo_Acesso_Lista_Circular_Ocupados);
+	CloseHandle(Semaforo_Acesso_Lista_Circular_Cheia);
+	CloseHandle(Evento_Lista_Circular_Contem_Dado_Processo);
+	CloseHandle(Evento_Lista_Circular_Contem_Defeito);
+
+	CloseHandle(Mutex_Acesso_Lista_Circular);
+
 	return 0;
 }
