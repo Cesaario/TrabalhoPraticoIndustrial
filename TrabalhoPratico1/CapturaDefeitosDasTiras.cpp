@@ -28,7 +28,6 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 		int Status_Wait_Lista_Ocupada = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Ocupados, 0);
 
 		if (Status_Wait_Lista_Ocupada == WAIT_TIMEOUT) {
-			printf("Lista circular vazia!!!\n");
 			WaitForSingleObject(Evento_Lista_Circular_Contem_Defeito, INFINITE);
 			continue;
 		}

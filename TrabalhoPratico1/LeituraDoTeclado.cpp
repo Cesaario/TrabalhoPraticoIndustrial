@@ -29,7 +29,10 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	HANDLE Semaforo_Acesso_Lista_Circular_Cheia = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Cheia");
-	HANDLE Semaforo_Acesso_Lista_Circular_Nao_Vazia = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Nao_Vazia");
+	HANDLE Evento_Lista_Circular_Contem_Dado_Processo = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Dado_Processo");
+	HANDLE Evento_Lista_Circular_Contem_Defeito = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Defeito");
+
+	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
 	bool Estado_Inspecao_Defeitos = DESBLOQUEADA;
 	bool Estado_Defeitos_Das_Tiras = DESBLOQUEADA;
@@ -79,16 +82,19 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	ResetEvent(Evento_Finalizar_Exibicao_De_Dados);
 
 	//Libera as threads bloqueadas
+	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
+	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 2, NULL);
+	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Cheia, 1, NULL);
+
+	SetEvent(Evento_Lista_Circular_Contem_Defeito);
+	SetEvent(Evento_Lista_Circular_Contem_Dado_Processo);
 	SetEvent(Evento_Desbloquear_Inspecao_Defeitos);
 	SetEvent(Evento_Desbloquear_Defeitos_Das_Tiras);
 	SetEvent(Evento_Desbloquear_Dados_De_Processo);
 	SetEvent(Evento_Desbloquear_Exibicao_De_Defeitos);
 	SetEvent(Evento_Desbloquear_Exibicao_De_Dados);
 
-	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
-	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
-	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Cheia, 1, NULL);
-	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Nao_Vazia, 2, NULL);
+	ReleaseMutex(Mutex_Acesso_Lista_Circular);
 	
 	printf("Finalizando thread the leitura de teclado\n");
 
