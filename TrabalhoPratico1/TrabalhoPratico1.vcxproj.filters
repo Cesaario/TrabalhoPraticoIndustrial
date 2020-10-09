@@ -39,13 +39,13 @@
     <ClCompile Include="LeituraDoTeclado.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="ListaCircular.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="RandomUtil.cpp">
       <Filter>Arquivos de Origem\Util</Filter>
     </ClCompile>
     <ClCompile Include="DadosDeProcesso.cpp">
+      <Filter>Arquivos de Origem\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="ListaCircular.cpp">
       <Filter>Arquivos de Origem\Util</Filter>
     </ClCompile>
   </ItemGroup>

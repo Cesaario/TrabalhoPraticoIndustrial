@@ -9,15 +9,16 @@
 #include "DadosDeProcesso.h"
 #include "RandomUtil.h"
 
-#define MENSAGEM_DEFEITO_SUPERFICIE_TIRA 1;
-#define MENSAGEM_DADOS_PROCESSO_LAMINAÇÃO 2;
+#define RED FOREGROUND_RED | FOREGROUND_INTENSITY
+#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
+#define WHITE   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE
 
-DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
+DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
 	DWORD resultadoEvento;
 
-	HANDLE Evento_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Inspecao_Defeitos");
+	HANDLE Evento_Nao_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Nao_Finalizar_Inspecao_Defeitos");
 	HANDLE Evento_Desbloquear_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Inspecao_Defeitos");
 
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
@@ -28,9 +29,13 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
+	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
+	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
+
 	do {
-		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 		Sleep(100);
+
+		WaitForSingleObject(Evento_Desbloquear_Inspecao_Defeitos, INFINITE);
 
 		int tipo = 0;
 		std::string mensagem = "";
@@ -44,27 +49,32 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		}
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
-
 		if (Status_Wait_Lista_Livre == WAIT_TIMEOUT) {
+
+			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+			SetConsoleTextAttribute(Handle_Console, RED);
 			printf("Lista circular cheia!!!\n");
+			ReleaseMutex(Mutex_Acesso_Console);
+
 			WaitForSingleObject(Evento_Lista_Circular_Nao_Cheia, INFINITE);
 			continue;
 		}
+
 		WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
-
 		std::string Mensagem_Atual = Lista_Circular_Memoria[GetPosicaoPonteiro()];;
-
 		while (Mensagem_Atual.size() != 0){
 			IncrementarPosicaoPonteiro();
 			Mensagem_Atual = Lista_Circular_Memoria[GetPosicaoPonteiro()];
 		};
 
 		Lista_Circular_Memoria[GetPosicaoPonteiro()] = mensagem;
-		std::cout << "Mensagem " << mensagem << " adicionada na posicao " << GetPosicaoPonteiro() << std::endl;
+
+		WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+		SetConsoleTextAttribute(Handle_Console, WHITE);
+		std::cout << "Mensagem \"" << mensagem << "\" adicionada na posicao " << GetPosicaoPonteiro() << " da lista." << std::endl;
+		ReleaseMutex(Mutex_Acesso_Console);
+
 		IncrementarPosicaoPonteiro();
-
-		DadosProcesso teste = DesserializarDadosProcesso(mensagem);
-
 		ReleaseMutex(Mutex_Acesso_Lista_Circular);
 
 		if (tipo == 11) {
@@ -76,10 +86,13 @@ DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
-		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
+		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Inspecao_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
+	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+	SetConsoleTextAttribute(Handle_Console, YELLOW);
 	printf("Finalizando thread de inspecao de defeitos...\n");
+	ReleaseMutex(Mutex_Acesso_Console);
 
 	_endthreadex((DWORD)id);
 	return id;

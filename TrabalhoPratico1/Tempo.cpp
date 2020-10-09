@@ -4,13 +4,15 @@
 #include <time.h>
 #include "Tempo.h"
 
+#define FUSO_HORARIO -3
+
 Tempo GerarTempoAtual() {
 	Tempo tempo;
 
 	SYSTEMTIME time_windows;
 	GetSystemTime(&time_windows);
 
-	tempo.hora = time_windows.wHour;
+	tempo.hora = (time_windows.wHour + FUSO_HORARIO < 0) ? 24 - ((-FUSO_HORARIO) - time_windows.wHour) : time_windows.wHour + FUSO_HORARIO;
 	tempo.minuto = time_windows.wMinute;
 	tempo.segundo = time_windows.wSecond;
 	tempo.milissegundo = time_windows.wMilliseconds;
@@ -23,7 +25,7 @@ std::string SerializarTempo(Tempo tempo) {
 	sprintf(Tempo_Serializado, "%02d:%02d:%02d:%03d", tempo.hora, tempo.minuto, tempo.segundo, tempo.milissegundo);
 	return Tempo_Serializado;
 }
-
+ 
 Tempo DesserializarTempo(std::string tempoString) {
 	Tempo tempo;
 

@@ -21,16 +21,16 @@ typedef unsigned* CAST_LPDWORD;
 
 #define WIN32_LEAN_AND_MEAN 
 
-HANDLE Handle_Thread_Leitura_Sistema_Inspecao_Defeitos;
+HANDLE Handle_Thread_Sistema_Inspecao_Defeitos;
 HANDLE Handle_Thread_Captura_Defeitos_Tiras;
 HANDLE Handle_Thread_Captura_Dados_Processos;
 HANDLE Handle_Thread_Leitura_Teclado;
 
-HANDLE Evento_Finalizar_Inspecao_Defeitos;
-HANDLE Evento_Finalizar_Defeitos_Das_Tiras;
-HANDLE Evento_Finalizar_Dados_De_Processo;
-HANDLE Evento_Finalizar_Exibicao_De_Defeitos;
-HANDLE Evento_Finalizar_Exibicao_De_Dados;
+HANDLE Evento_Nao_Finalizar_Inspecao_Defeitos;
+HANDLE Evento_Nao_Finalizar_Defeitos_Das_Tiras;
+HANDLE Evento_Nao_Finalizar_Dados_De_Processo;
+HANDLE Evento_Nao_Finalizar_Exibicao_De_Defeitos;
+HANDLE Evento_Nao_Finalizar_Exibicao_De_Dados;
 
 HANDLE Evento_Desbloquear_Inspecao_Defeitos;
 HANDLE Evento_Desbloquear_Defeitos_Das_Tiras;
@@ -47,6 +47,12 @@ HANDLE Evento_Lista_Circular_Contem_Dado_Processo;
 HANDLE Evento_Lista_Circular_Contem_Defeito;
 
 HANDLE Mutex_Acesso_Lista_Circular;
+HANDLE Mutex_Acesso_Console;
+
+HANDLE Handle_Console;
+
+#define WHITE   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE
+#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
 
 int main()
 {
@@ -60,11 +66,11 @@ int main()
 
 	//TODO: Tratamento de erros.
 
-	Evento_Finalizar_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Inspecao_Defeitos");
-	Evento_Finalizar_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Defeitos_Das_Tiras");
-	Evento_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Dados_De_Processo");
-	Evento_Finalizar_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Defeitos");
-	Evento_Finalizar_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Dados");
+	Evento_Nao_Finalizar_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Inspecao_Defeitos");
+	Evento_Nao_Finalizar_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Defeitos_Das_Tiras");
+	Evento_Nao_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Dados_De_Processo");
+	Evento_Nao_Finalizar_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Exibicao_De_Defeitos");
+	Evento_Nao_Finalizar_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Exibicao_De_Dados");
 
 	Evento_Desbloquear_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Inspecao_Defeitos");
 	Evento_Desbloquear_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Defeitos_Das_Tiras");
@@ -81,6 +87,9 @@ int main()
 	Evento_Limpar_Janela = CreateEvent(NULL, FALSE, FALSE, "Evento_Limpar_Janela");
 
 	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
+	Mutex_Acesso_Console = CreateMutex(NULL, FALSE, "Mutex_Acesso_Console");
+
+	Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,
@@ -92,10 +101,10 @@ int main()
 		(CAST_LPDWORD)&dwThreadID
 	);
 
-	Handle_Thread_Leitura_Sistema_Inspecao_Defeitos = (HANDLE)_beginthreadex(
+	Handle_Thread_Sistema_Inspecao_Defeitos = (HANDLE)_beginthreadex(
 		NULL,
 		0,
-		(CAST_FUNCTION)Thread_Leitura_Sistema_Inspecao_Defeitos,
+		(CAST_FUNCTION)Thread_Sistema_Inspecao_Defeitos,
 		(void*)
 		ID_LEITURA_SISTEMA_INSPECAO_DEFEITOS,
 		0,
@@ -123,31 +132,31 @@ int main()
 	);
 
 	status = CreateProcess(
-		"..\\Debug\\ExibicaoDeDefeitos.exe", // Caminho do arquivo executável
-		NULL,								 // Apontador p/ parâmetros de linha de comando
-		NULL,								 // Apontador p/ descritor de segurança
+		"..\\Debug\\ExibicaoDeDefeitos.exe", // Caminho do arquivo executï¿½vel
+		NULL,								 // Apontador p/ parï¿½metros de linha de comando
+		NULL,								 // Apontador p/ descritor de seguranï¿½a
 		NULL,								 // Idem, threads do processo
-		FALSE,								 // Herança de handles
-		CREATE_NEW_CONSOLE,					 // Flags de criação
-		NULL,								 // Herança do amniente de execução
-		"C:\\Windows",						 // Diretório do arquivo executável
+		FALSE,								 // Heranï¿½a de handles
+		CREATE_NEW_CONSOLE,					 // Flags de criaï¿½ï¿½o
+		NULL,								 // Heranï¿½a do amniente de execuï¿½ï¿½o
+		"C:\\Windows",						 // Diretï¿½rio do arquivo executï¿½vel
 		&si,								 // lpStartUpInfo
 		&NewProcess);						 // lpProcessInformation
 
 	status = CreateProcess(
-		"..\\Debug\\ExibicaoDadosDeProcesso.exe", // Caminho do arquivo executável
-		NULL,									  // Apontador p/ parâmetros de linha de comando
-		NULL,									  // Apontador p/ descritor de segurança
+		"..\\Debug\\ExibicaoDadosDeProcesso.exe", // Caminho do arquivo executï¿½vel
+		NULL,									  // Apontador p/ parï¿½metros de linha de comando
+		NULL,									  // Apontador p/ descritor de seguranï¿½a
 		NULL,									  // Idem, threads do processo
-		FALSE,									  // Herança de handles
-		CREATE_NEW_CONSOLE,						  // Flags de criação
-		NULL,									  // Herança do amniente de execução
-		"C:\\Windows",							  // Diretório do arquivo executável
+		FALSE,									  // Heranï¿½a de handles
+		CREATE_NEW_CONSOLE,						  // Flags de criaï¿½ï¿½o
+		NULL,									  // Heranï¿½a do amniente de execuï¿½ï¿½o
+		"C:\\Windows",							  // Diretï¿½rio do arquivo executï¿½vel
 		&si,									  // lpStartUpInfo
 		&NewProcess);							  // lpProcessInformation
 
 	HANDLE Threads[4] = {
-		Handle_Thread_Leitura_Sistema_Inspecao_Defeitos,
+		Handle_Thread_Sistema_Inspecao_Defeitos,
 		Handle_Thread_Captura_Defeitos_Tiras,
 		Handle_Thread_Captura_Dados_Processos,
 		Handle_Thread_Leitura_Teclado
@@ -160,18 +169,21 @@ int main()
 		return 0;
 	}
 
+	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+	SetConsoleTextAttribute(Handle_Console, YELLOW);
 	printf("Finalizando...");
+	ReleaseMutex(Mutex_Acesso_Console);
 
-	CloseHandle(Handle_Thread_Leitura_Sistema_Inspecao_Defeitos);
+	CloseHandle(Handle_Thread_Sistema_Inspecao_Defeitos);
 	CloseHandle(Handle_Thread_Captura_Defeitos_Tiras);
 	CloseHandle(Handle_Thread_Captura_Dados_Processos);
 	CloseHandle(Handle_Thread_Leitura_Teclado);
 
-	CloseHandle(Evento_Finalizar_Inspecao_Defeitos);
-	CloseHandle(Evento_Finalizar_Defeitos_Das_Tiras);
-	CloseHandle(Evento_Finalizar_Dados_De_Processo);
-	CloseHandle(Evento_Finalizar_Exibicao_De_Defeitos);
-	CloseHandle(Evento_Finalizar_Exibicao_De_Dados);
+	CloseHandle(Evento_Nao_Finalizar_Inspecao_Defeitos);
+	CloseHandle(Evento_Nao_Finalizar_Defeitos_Das_Tiras);
+	CloseHandle(Evento_Nao_Finalizar_Dados_De_Processo);
+	CloseHandle(Evento_Nao_Finalizar_Exibicao_De_Defeitos);
+	CloseHandle(Evento_Nao_Finalizar_Exibicao_De_Dados);
 
 	CloseHandle(Evento_Desbloquear_Inspecao_Defeitos);
 	CloseHandle(Evento_Desbloquear_Defeitos_Das_Tiras);
@@ -189,5 +201,6 @@ int main()
 
 	CloseHandle(Mutex_Acesso_Lista_Circular);
 
+	SetConsoleTextAttribute(Handle_Console, WHITE);
 	return 0;
 }

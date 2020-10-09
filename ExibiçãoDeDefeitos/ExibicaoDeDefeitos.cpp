@@ -11,7 +11,7 @@ int main()
 
 	DWORD resultadoEvento;
 
-	HANDLE Evento_Finalizar_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Exibicao_De_Defeitos");
+	HANDLE Evento_Nao_Finalizar_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Nao_Finalizar_Exibicao_De_Defeitos");
 	HANDLE Evento_Desbloquear_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Exibicao_De_Defeitos");
 
 	int contador = 0;
@@ -19,7 +19,7 @@ int main()
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Exibicao_De_Defeitos, INFINITE);
 		printf("%d\n", contador++);
-		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Exibicao_De_Defeitos, 0);
+		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Exibicao_De_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
 	printf("Finalizando processo de exibicao de defeitos...\n");
