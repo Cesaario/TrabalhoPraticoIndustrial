@@ -46,7 +46,7 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 
 			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
 			SetConsoleTextAttribute(Handle_Console, BLUE);
-			printf("Mensagem [TIPO 11] consumida! Pos: %d\n", Ponteiro_Leitura_Defeitos % TAMANHO_LISTA);
+			printf("[TIPO 11] Mensagem consumida! Posicao: %d\n", Ponteiro_Leitura_Defeitos % TAMANHO_LISTA);
 			ReleaseMutex(Mutex_Acesso_Console);
 
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);

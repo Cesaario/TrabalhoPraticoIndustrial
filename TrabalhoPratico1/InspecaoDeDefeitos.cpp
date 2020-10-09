@@ -71,7 +71,7 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 		WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
 		SetConsoleTextAttribute(Handle_Console, WHITE);
-		std::cout << "Mensagem " << mensagem << " adicionada na posicao " << GetPosicaoPonteiro() << std::endl;
+		std::cout << "Mensagem \"" << mensagem << "\" adicionada na posicao " << GetPosicaoPonteiro() << " da lista." << std::endl;
 		ReleaseMutex(Mutex_Acesso_Console);
 
 		IncrementarPosicaoPonteiro();
