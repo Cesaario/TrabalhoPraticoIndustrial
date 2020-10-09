@@ -3,25 +3,32 @@
 #include "ListaCircular.h"
 
 std::string Lista_Circular_Memoria[TAMANHO_LISTA];
-int Posicao_Livre = 0;
-int Posicao_Ocupado = 0;
-
-/*HANDLE Semaforo_Acesso_Lista_Circular_Livres;
-HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
-
-void IniciarHandlesListaCircular() {
-	Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
-	Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
-}*/
+int Posicao_Ponteiro = 0;
 
 std::string* ReferenciaListaCircular() {
 	return Lista_Circular_Memoria;
 }
 
-int GetPosicaoLivre() {
-	return Posicao_Livre % TAMANHO_LISTA;
+int GetPosicaoPonteiro() {
+	return Posicao_Ponteiro % TAMANHO_LISTA;
 }
 
-void IncrementarPosicaoLivre() {
-	Posicao_Livre = (Posicao_Livre + 1) % TAMANHO_LISTA;
+void IncrementarPosicaoPonteiro() {
+	Posicao_Ponteiro = (Posicao_Ponteiro + 1) % TAMANHO_LISTA;
+}
+
+void Print_Snapshot_Lista() {
+	for (int i = 0; i < TAMANHO_LISTA; i++) {
+		std::string mensagem = Lista_Circular_Memoria[i];
+		if (mensagem.size() == 0) {
+			printf("_");
+		}
+		else {
+			printf("X");
+		}
+		if (i == (TAMANHO_LISTA / 2) - 1) {
+			printf("\n");
+		}
+	}
+	printf("\n");
 }

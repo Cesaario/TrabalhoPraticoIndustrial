@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <process.h>
 #include <conio.h>
+#include <string>
 #include "LeituraDoTeclado.h"
+#include "ListaCircular.h"
 
 #define	ESC 0x1B
 #define DESBLOQUEADA true
@@ -71,6 +73,9 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 		case 'c':
 			printf("Limpando janela...\n");
 			SetEvent(Evento_Limpar_Janela);
+			break;
+		case 'v':
+			Print_Snapshot_Lista();
 			break;
 		default:
 			printf("Comando não recohecido \n");
