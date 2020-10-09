@@ -21,7 +21,6 @@ int main()
 	int contador = 0;
 
 	do {
-		//WaitForSingleObject(Evento_Desbloquear_Exibicao_De_Dados, INFINITE);
 		resultadoWait = WaitForMultipleObjects(2, Handles_Tarefa_Exibicao_De_Dados, FALSE, INFINITE);
 		if (resultadoWait == WAIT_OBJECT_0 + 0) {
 			system("cls");
