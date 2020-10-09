@@ -18,6 +18,7 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
 	HANDLE Semaforo_Acesso_Lista_Circular_Ocupados = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Ocupados");
 	HANDLE Evento_Lista_Circular_Contem_Defeito = OpenEvent(SYNCHRONIZE, false, "Evento_Lista_Circular_Contem_Defeito");
+	HANDLE Evento_Lista_Circular_Nao_Cheia = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Nao_Cheia");
 
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
@@ -40,6 +41,7 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 			Lista_Circular_Memoria[Ponteiro_Leitura_Defeitos % TAMANHO_LISTA] = "";
 			printf("Mensagem [TIPO 11] consumida! Pos: %d\n", Ponteiro_Leitura_Defeitos % TAMANHO_LISTA);
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
+			SetEvent(Evento_Lista_Circular_Nao_Cheia);
 		}
 		else {
 			//A tarefa não corresponde ao tipo procurado, portanto, não vamos retirá-la.

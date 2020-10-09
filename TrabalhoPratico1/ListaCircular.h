@@ -1,9 +1,8 @@
 #pragma once
 #define TAMANHO_LISTA 200
-extern int Posicao_Livre;
-extern int Posicao_Ocupado;
+extern int Posicao_Ponteiro;
 extern std::string Lista_Circular_Memoria[];
 
-void IniciarHandlesListaCircular();
-int GetPosicaoLivre();
-void IncrementarPosicaoLivre();
+int GetPosicaoPonteiro();
+void IncrementarPosicaoPonteiro();
+void Print_Snapshot_Lista();

@@ -42,7 +42,7 @@ HANDLE Evento_Limpar_Janela;
 
 HANDLE Semaforo_Acesso_Lista_Circular_Livres;
 HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
-HANDLE Semaforo_Acesso_Lista_Circular_Cheia;
+HANDLE Evento_Lista_Circular_Nao_Cheia;
 HANDLE Evento_Lista_Circular_Contem_Dado_Processo;
 HANDLE Evento_Lista_Circular_Contem_Defeito;
 
@@ -74,7 +74,7 @@ int main()
 
 	Semaforo_Acesso_Lista_Circular_Livres = CreateSemaphore(NULL, TAMANHO_LISTA, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Livres");
 	Semaforo_Acesso_Lista_Circular_Ocupados = CreateSemaphore(NULL, 0, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Ocupados");
-	Semaforo_Acesso_Lista_Circular_Cheia = CreateSemaphore(NULL, 0, 1, "Semaforo_Acesso_Lista_Circular_Cheia");
+	Evento_Lista_Circular_Nao_Cheia = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Nao_Cheia");
 	Evento_Lista_Circular_Contem_Dado_Processo = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Dado_Processo");
 	Evento_Lista_Circular_Contem_Defeito = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Defeito");
 
@@ -183,7 +183,7 @@ int main()
 
 	CloseHandle(Semaforo_Acesso_Lista_Circular_Livres);
 	CloseHandle(Semaforo_Acesso_Lista_Circular_Ocupados);
-	CloseHandle(Semaforo_Acesso_Lista_Circular_Cheia);
+	CloseHandle(Evento_Lista_Circular_Nao_Cheia);
 	CloseHandle(Evento_Lista_Circular_Contem_Dado_Processo);
 	CloseHandle(Evento_Lista_Circular_Contem_Defeito);
 
