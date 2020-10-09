@@ -21,7 +21,7 @@ typedef unsigned* CAST_LPDWORD;
 
 #define WIN32_LEAN_AND_MEAN 
 
-HANDLE Handle_Thread_Leitura_Sistema_Inspecao_Defeitos;
+HANDLE Handle_Thread_Sistema_Inspecao_Defeitos;
 HANDLE Handle_Thread_Captura_Defeitos_Tiras;
 HANDLE Handle_Thread_Captura_Dados_Processos;
 HANDLE Handle_Thread_Leitura_Teclado;
@@ -92,10 +92,10 @@ int main()
 		(CAST_LPDWORD)&dwThreadID
 	);
 
-	Handle_Thread_Leitura_Sistema_Inspecao_Defeitos = (HANDLE)_beginthreadex(
+	Handle_Thread_Sistema_Inspecao_Defeitos = (HANDLE)_beginthreadex(
 		NULL,
 		0,
-		(CAST_FUNCTION)Thread_Leitura_Sistema_Inspecao_Defeitos,
+		(CAST_FUNCTION)Thread_Sistema_Inspecao_Defeitos,
 		(void*)
 		ID_LEITURA_SISTEMA_INSPECAO_DEFEITOS,
 		0,
@@ -147,7 +147,7 @@ int main()
 		&NewProcess);							  // lpProcessInformation
 
 	HANDLE Threads[4] = {
-		Handle_Thread_Leitura_Sistema_Inspecao_Defeitos,
+		Handle_Thread_Sistema_Inspecao_Defeitos,
 		Handle_Thread_Captura_Defeitos_Tiras,
 		Handle_Thread_Captura_Dados_Processos,
 		Handle_Thread_Leitura_Teclado
@@ -162,7 +162,7 @@ int main()
 
 	printf("Finalizando...");
 
-	CloseHandle(Handle_Thread_Leitura_Sistema_Inspecao_Defeitos);
+	CloseHandle(Handle_Thread_Sistema_Inspecao_Defeitos);
 	CloseHandle(Handle_Thread_Captura_Defeitos_Tiras);
 	CloseHandle(Handle_Thread_Captura_Dados_Processos);
 	CloseHandle(Handle_Thread_Leitura_Teclado);

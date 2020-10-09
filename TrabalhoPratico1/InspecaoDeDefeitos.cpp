@@ -12,7 +12,7 @@
 #define MENSAGEM_DEFEITO_SUPERFICIE_TIRA 1;
 #define MENSAGEM_DADOS_PROCESSO_LAMINAÇÃO 2;
 
-DWORD WINAPI Thread_Leitura_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
+DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
 	DWORD resultadoEvento;
