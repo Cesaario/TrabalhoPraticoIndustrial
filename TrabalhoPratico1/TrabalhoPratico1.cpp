@@ -38,6 +38,8 @@ HANDLE Evento_Desbloquear_Dados_De_Processo;
 HANDLE Evento_Desbloquear_Exibicao_De_Defeitos;
 HANDLE Evento_Desbloquear_Exibicao_De_Dados;
 
+HANDLE Evento_Limpar_Janela;
+
 HANDLE Semaforo_Acesso_Lista_Circular_Livres;
 HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
 HANDLE Semaforo_Acesso_Lista_Circular_Cheia;
@@ -75,6 +77,8 @@ int main()
 	Semaforo_Acesso_Lista_Circular_Cheia = CreateSemaphore(NULL, 0, 1, "Semaforo_Acesso_Lista_Circular_Cheia");
 	Evento_Lista_Circular_Contem_Dado_Processo = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Dado_Processo");
 	Evento_Lista_Circular_Contem_Defeito = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Defeito");
+
+	Evento_Limpar_Janela = CreateEvent(NULL, FALSE, FALSE, "Evento_Limpar_Janela");
 
 	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
 

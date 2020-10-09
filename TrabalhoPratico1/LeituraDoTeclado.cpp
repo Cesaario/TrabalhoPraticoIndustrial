@@ -32,6 +32,8 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Evento_Lista_Circular_Contem_Dado_Processo = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Dado_Processo");
 	HANDLE Evento_Lista_Circular_Contem_Defeito = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Defeito");
 
+	HANDLE Evento_Limpar_Janela = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Limpar_Janela");
+
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
 	bool Estado_Inspecao_Defeitos = DESBLOQUEADA;
@@ -67,7 +69,9 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Dados, &Estado_Exibicao_De_Dados);
 			break;
 		case 'c':
-			printf("Limpando...");
+			printf("Limpando janela...\n");
+			SetEvent(Evento_Limpar_Janela);
+			break;
 		default:
 			printf("Comando não recohecido \n");
 		}
