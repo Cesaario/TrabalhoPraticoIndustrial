@@ -5,10 +5,6 @@
 std::string Lista_Circular_Memoria[TAMANHO_LISTA];
 int Posicao_Ponteiro = 0;
 
-std::string* ReferenciaListaCircular() {
-	return Lista_Circular_Memoria;
-}
-
 int GetPosicaoPonteiro() {
 	return Posicao_Ponteiro % TAMANHO_LISTA;
 }
