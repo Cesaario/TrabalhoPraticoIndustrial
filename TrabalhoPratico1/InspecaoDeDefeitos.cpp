@@ -9,15 +9,12 @@
 #include "DadosDeProcesso.h"
 #include "RandomUtil.h"
 
-#define MENSAGEM_DEFEITO_SUPERFICIE_TIRA 1;
-#define MENSAGEM_DADOS_PROCESSO_LAMINAÇÃO 2;
-
 DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
 	DWORD resultadoEvento;
 
-	HANDLE Evento_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Inspecao_Defeitos");
+	HANDLE Evento_Nao_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Nao_Finalizar_Inspecao_Defeitos");
 	HANDLE Evento_Desbloquear_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Inspecao_Defeitos");
 
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
@@ -72,7 +69,7 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 		ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
-		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Inspecao_Defeitos, 0);
+		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Inspecao_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
 	printf("Finalizando thread de inspecao de defeitos...\n");

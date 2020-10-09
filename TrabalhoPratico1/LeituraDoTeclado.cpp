@@ -16,11 +16,11 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	int id = (int)thread_arg;
 
-	HANDLE Evento_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Inspecao_Defeitos");
-	HANDLE Evento_Finalizar_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Defeitos_Das_Tiras");
-	HANDLE Evento_Finalizar_Dados_De_Processo = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Dados_De_Processo");
-	HANDLE Evento_Finalizar_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Exibicao_De_Defeitos");
-	HANDLE Evento_Finalizar_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Finalizar_Exibicao_De_Dados");
+	HANDLE Evento_Nao_Finalizar_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Nao_Finalizar_Inspecao_Defeitos");
+	HANDLE Evento_Nao_Finalizar_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Nao_Finalizar_Defeitos_Das_Tiras");
+	HANDLE Evento_Nao_Finalizar_Dados_De_Processo = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Nao_Finalizar_Dados_De_Processo");
+	HANDLE Evento_Nao_Finalizar_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Nao_Finalizar_Exibicao_De_Defeitos");
+	HANDLE Evento_Nao_Finalizar_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Nao_Finalizar_Exibicao_De_Dados");
 
 	HANDLE Evento_Desbloquear_Inspecao_Defeitos = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Desbloquear_Inspecao_Defeitos");
 	HANDLE Evento_Desbloquear_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Desbloquear_Defeitos_Das_Tiras");
@@ -51,7 +51,7 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 		switch (tecla) {
 		case 'i':
-			printf("Alternando tarefa de inspeção de defeitos...\n");
+			printf("Alternando tarefa de inspeï¿½ï¿½o de defeitos...\n");
 			AlternarEvento(Evento_Desbloquear_Inspecao_Defeitos, &Estado_Inspecao_Defeitos);
 			break;
 		case 'd':
@@ -63,11 +63,11 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 			AlternarEvento(Evento_Desbloquear_Dados_De_Processo, &Estado_Dados_De_Processo);
 			break;
 		case 'a':
-			printf("Alternando tarefa de exibição de defeitos...\n");
+			printf("Alternando tarefa de exibiï¿½ï¿½o de defeitos...\n");
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Defeitos, &Estado_Exibicao_De_Defeitos);
 			break;
 		case 'l':
-			printf("Alternando tarefa de exibição de dados...\n");
+			printf("Alternando tarefa de exibiï¿½ï¿½o de dados...\n");
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Dados, &Estado_Exibicao_De_Dados);
 			break;
 		case 'c':
@@ -78,17 +78,17 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 			Print_Snapshot_Lista();
 			break;
 		default:
-			printf("Comando não recohecido \n");
+			printf("Comando nï¿½o recohecido \n");
 		}
 
 	} while (tecla != ESC);
 
 	//Evento de finalizar threads
-	ResetEvent(Evento_Finalizar_Inspecao_Defeitos);
-	ResetEvent(Evento_Finalizar_Defeitos_Das_Tiras);
-	ResetEvent(Evento_Finalizar_Dados_De_Processo);
-	ResetEvent(Evento_Finalizar_Exibicao_De_Defeitos);
-	ResetEvent(Evento_Finalizar_Exibicao_De_Dados);
+	ResetEvent(Evento_Nao_Finalizar_Inspecao_Defeitos);
+	ResetEvent(Evento_Nao_Finalizar_Defeitos_Das_Tiras);
+	ResetEvent(Evento_Nao_Finalizar_Dados_De_Processo);
+	ResetEvent(Evento_Nao_Finalizar_Exibicao_De_Defeitos);
+	ResetEvent(Evento_Nao_Finalizar_Exibicao_De_Dados);
 
 	//Libera as threads bloqueadas
 	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);

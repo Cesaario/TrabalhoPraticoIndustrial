@@ -12,7 +12,7 @@ int main()
 	DWORD resultadoEvento = 0;
 	DWORD resultadoWait = 0;
 
-	HANDLE Evento_Finalizar_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Exibicao_De_Dados");
+	HANDLE Evento_Nao_Finalizar_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE, false, "Evento_Nao_Finalizar_Exibicao_De_Dados");
 	HANDLE Evento_Desbloquear_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Exibicao_De_Dados");
 	HANDLE Evento_Limpar_Janela = OpenEvent(SYNCHRONIZE, false, "Evento_Limpar_Janela");
 
@@ -29,7 +29,7 @@ int main()
 			continue;
 		}
 		printf("%d\n", contador++);
-		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Exibicao_De_Dados, 0);
+		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Exibicao_De_Dados, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
 	printf("Finalizando processo de exibicao de dados de processo...\n");

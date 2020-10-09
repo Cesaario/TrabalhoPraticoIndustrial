@@ -26,11 +26,11 @@ HANDLE Handle_Thread_Captura_Defeitos_Tiras;
 HANDLE Handle_Thread_Captura_Dados_Processos;
 HANDLE Handle_Thread_Leitura_Teclado;
 
-HANDLE Evento_Finalizar_Inspecao_Defeitos;
-HANDLE Evento_Finalizar_Defeitos_Das_Tiras;
-HANDLE Evento_Finalizar_Dados_De_Processo;
-HANDLE Evento_Finalizar_Exibicao_De_Defeitos;
-HANDLE Evento_Finalizar_Exibicao_De_Dados;
+HANDLE Evento_Nao_Finalizar_Inspecao_Defeitos;
+HANDLE Evento_Nao_Finalizar_Defeitos_Das_Tiras;
+HANDLE Evento_Nao_Finalizar_Dados_De_Processo;
+HANDLE Evento_Nao_Finalizar_Exibicao_De_Defeitos;
+HANDLE Evento_Nao_Finalizar_Exibicao_De_Dados;
 
 HANDLE Evento_Desbloquear_Inspecao_Defeitos;
 HANDLE Evento_Desbloquear_Defeitos_Das_Tiras;
@@ -60,11 +60,11 @@ int main()
 
 	//TODO: Tratamento de erros.
 
-	Evento_Finalizar_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Inspecao_Defeitos");
-	Evento_Finalizar_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Defeitos_Das_Tiras");
-	Evento_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Dados_De_Processo");
-	Evento_Finalizar_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Defeitos");
-	Evento_Finalizar_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Dados");
+	Evento_Nao_Finalizar_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Inspecao_Defeitos");
+	Evento_Nao_Finalizar_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Defeitos_Das_Tiras");
+	Evento_Nao_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Dados_De_Processo");
+	Evento_Nao_Finalizar_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Exibicao_De_Defeitos");
+	Evento_Nao_Finalizar_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Nao_Finalizar_Exibicao_De_Dados");
 
 	Evento_Desbloquear_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Inspecao_Defeitos");
 	Evento_Desbloquear_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Defeitos_Das_Tiras");
@@ -123,26 +123,26 @@ int main()
 	);
 
 	status = CreateProcess(
-		"..\\Debug\\ExibicaoDeDefeitos.exe", // Caminho do arquivo executável
-		NULL,								 // Apontador p/ parâmetros de linha de comando
-		NULL,								 // Apontador p/ descritor de segurança
+		"..\\Debug\\ExibicaoDeDefeitos.exe", // Caminho do arquivo executï¿½vel
+		NULL,								 // Apontador p/ parï¿½metros de linha de comando
+		NULL,								 // Apontador p/ descritor de seguranï¿½a
 		NULL,								 // Idem, threads do processo
-		FALSE,								 // Herança de handles
-		CREATE_NEW_CONSOLE,					 // Flags de criação
-		NULL,								 // Herança do amniente de execução
-		"C:\\Windows",						 // Diretório do arquivo executável
+		FALSE,								 // Heranï¿½a de handles
+		CREATE_NEW_CONSOLE,					 // Flags de criaï¿½ï¿½o
+		NULL,								 // Heranï¿½a do amniente de execuï¿½ï¿½o
+		"C:\\Windows",						 // Diretï¿½rio do arquivo executï¿½vel
 		&si,								 // lpStartUpInfo
 		&NewProcess);						 // lpProcessInformation
 
 	status = CreateProcess(
-		"..\\Debug\\ExibicaoDadosDeProcesso.exe", // Caminho do arquivo executável
-		NULL,									  // Apontador p/ parâmetros de linha de comando
-		NULL,									  // Apontador p/ descritor de segurança
+		"..\\Debug\\ExibicaoDadosDeProcesso.exe", // Caminho do arquivo executï¿½vel
+		NULL,									  // Apontador p/ parï¿½metros de linha de comando
+		NULL,									  // Apontador p/ descritor de seguranï¿½a
 		NULL,									  // Idem, threads do processo
-		FALSE,									  // Herança de handles
-		CREATE_NEW_CONSOLE,						  // Flags de criação
-		NULL,									  // Herança do amniente de execução
-		"C:\\Windows",							  // Diretório do arquivo executável
+		FALSE,									  // Heranï¿½a de handles
+		CREATE_NEW_CONSOLE,						  // Flags de criaï¿½ï¿½o
+		NULL,									  // Heranï¿½a do amniente de execuï¿½ï¿½o
+		"C:\\Windows",							  // Diretï¿½rio do arquivo executï¿½vel
 		&si,									  // lpStartUpInfo
 		&NewProcess);							  // lpProcessInformation
 
@@ -167,11 +167,11 @@ int main()
 	CloseHandle(Handle_Thread_Captura_Dados_Processos);
 	CloseHandle(Handle_Thread_Leitura_Teclado);
 
-	CloseHandle(Evento_Finalizar_Inspecao_Defeitos);
-	CloseHandle(Evento_Finalizar_Defeitos_Das_Tiras);
-	CloseHandle(Evento_Finalizar_Dados_De_Processo);
-	CloseHandle(Evento_Finalizar_Exibicao_De_Defeitos);
-	CloseHandle(Evento_Finalizar_Exibicao_De_Dados);
+	CloseHandle(Evento_Nao_Finalizar_Inspecao_Defeitos);
+	CloseHandle(Evento_Nao_Finalizar_Defeitos_Das_Tiras);
+	CloseHandle(Evento_Nao_Finalizar_Dados_De_Processo);
+	CloseHandle(Evento_Nao_Finalizar_Exibicao_De_Defeitos);
+	CloseHandle(Evento_Nao_Finalizar_Exibicao_De_Dados);
 
 	CloseHandle(Evento_Desbloquear_Inspecao_Defeitos);
 	CloseHandle(Evento_Desbloquear_Defeitos_Das_Tiras);

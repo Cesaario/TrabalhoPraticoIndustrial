@@ -12,7 +12,7 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 	int id = (int)thread_arg;
 	DWORD resultadoEvento = WAIT_OBJECT_0;
 
-	HANDLE Evento_Finalizar_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE, false, "Evento_Finalizar_Defeitos_Das_Tiras");
+	HANDLE Evento_Nao_Finalizar_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE, false, "Evento_Nao_Finalizar_Defeitos_Das_Tiras");
 	HANDLE Evento_Desbloquear_Defeitos_Das_Tiras = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Defeitos_Das_Tiras");
 
 	HANDLE Semaforo_Acesso_Lista_Circular_Livres = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Acesso_Lista_Circular_Livres");
@@ -43,14 +43,14 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
 		}
 		else {
-			//A tarefa não corresponde ao tipo procurado, portanto, não vamos retirá-la.
+			//A tarefa nï¿½o corresponde ao tipo procurado, portanto, nï¿½o vamos retirï¿½-la.
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 		}
 
 		Ponteiro_Leitura_Defeitos++;
 		ReleaseMutex(Mutex_Acesso_Lista_Circular);
 
-		resultadoEvento = WaitForSingleObject(Evento_Finalizar_Defeitos_Das_Tiras, 0);
+		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Defeitos_Das_Tiras, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
 	printf("Finalizando thread de captura de defeitos das tiras...\n");
