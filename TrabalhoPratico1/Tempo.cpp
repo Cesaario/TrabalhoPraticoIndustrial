@@ -4,13 +4,15 @@
 #include <time.h>
 #include "Tempo.h"
 
+#define FUSO_HORARIO -3
+
 Tempo GerarTempoAtual() {
 	Tempo tempo;
 
 	SYSTEMTIME time_windows;
 	GetSystemTime(&time_windows);
 
-	tempo.hora = time_windows.wHour;
+	tempo.hora = (time_windows.wHour + FUSO_HORARIO < 0) ? 24 - ((-FUSO_HORARIO) - time_windows.wHour) : time_windows.wHour + FUSO_HORARIO;
 	tempo.minuto = time_windows.wMinute;
 	tempo.segundo = time_windows.wSecond;
 	tempo.milissegundo = time_windows.wMilliseconds;
