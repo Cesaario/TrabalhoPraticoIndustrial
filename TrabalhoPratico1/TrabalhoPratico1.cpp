@@ -1,4 +1,4 @@
-#define WIN32_LEAN_AND_MEAN 
+#pragma warning(disable:4996)
 #include <windows.h>
 #include <process.h>
 #include <stdio.h>
@@ -9,6 +9,8 @@
 #include "CapturaDefeitosDasTiras.h"
 #include "CapturaDadosDeProcessos.h"
 #include "LeituraDoTeclado.h"
+#include "ListaCircular.h"
+#include <time.h>
 
 typedef unsigned (WINAPI* CAST_FUNCTION)(LPVOID);
 typedef unsigned* CAST_LPDWORD;
@@ -16,6 +18,8 @@ typedef unsigned* CAST_LPDWORD;
 #define ID_LEITURA_SISTEMA_INSPECAO_DEFEITOS 1
 #define ID_LEITURA_CAPTURA_DEFEITOS_TIRAS 2
 #define ID_CAPTURA_DADOS_PROCESSOS 3
+
+#define WIN32_LEAN_AND_MEAN 
 
 HANDLE Handle_Thread_Leitura_Sistema_Inspecao_Defeitos;
 HANDLE Handle_Thread_Captura_Defeitos_Tiras;
@@ -28,9 +32,24 @@ HANDLE Evento_Finalizar_Dados_De_Processo;
 HANDLE Evento_Finalizar_Exibicao_De_Defeitos;
 HANDLE Evento_Finalizar_Exibicao_De_Dados;
 
+HANDLE Evento_Desbloquear_Inspecao_Defeitos;
+HANDLE Evento_Desbloquear_Defeitos_Das_Tiras;
+HANDLE Evento_Desbloquear_Dados_De_Processo;
+HANDLE Evento_Desbloquear_Exibicao_De_Defeitos;
+HANDLE Evento_Desbloquear_Exibicao_De_Dados;
+
+HANDLE Evento_Limpar_Janela;
+
+HANDLE Semaforo_Acesso_Lista_Circular_Livres;
+HANDLE Semaforo_Acesso_Lista_Circular_Ocupados;
+HANDLE Semaforo_Acesso_Lista_Circular_Cheia;
+HANDLE Evento_Lista_Circular_Contem_Dado_Processo;
+HANDLE Evento_Lista_Circular_Contem_Defeito;
+
+HANDLE Mutex_Acesso_Lista_Circular;
+
 int main()
 {
-
 	DWORD status, dwThreadID, dwExitCode;
 
 	STARTUPINFO si;
@@ -46,6 +65,22 @@ int main()
 	Evento_Finalizar_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Dados_De_Processo");
 	Evento_Finalizar_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Defeitos");
 	Evento_Finalizar_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Finalizar_Exibicao_De_Dados");
+
+	Evento_Desbloquear_Inspecao_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Inspecao_Defeitos");
+	Evento_Desbloquear_Defeitos_Das_Tiras = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Defeitos_Das_Tiras");
+	Evento_Desbloquear_Dados_De_Processo = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Dados_De_Processo");
+	Evento_Desbloquear_Exibicao_De_Defeitos = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Defeitos");
+	Evento_Desbloquear_Exibicao_De_Dados = CreateEvent(NULL, TRUE, TRUE, "Evento_Desbloquear_Exibicao_De_Dados");
+
+	Semaforo_Acesso_Lista_Circular_Livres = CreateSemaphore(NULL, TAMANHO_LISTA, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Livres");
+	Semaforo_Acesso_Lista_Circular_Ocupados = CreateSemaphore(NULL, 0, TAMANHO_LISTA, "Semaforo_Acesso_Lista_Circular_Ocupados");
+	Semaforo_Acesso_Lista_Circular_Cheia = CreateSemaphore(NULL, 0, 1, "Semaforo_Acesso_Lista_Circular_Cheia");
+	Evento_Lista_Circular_Contem_Dado_Processo = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Dado_Processo");
+	Evento_Lista_Circular_Contem_Defeito = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Defeito");
+
+	Evento_Limpar_Janela = CreateEvent(NULL, FALSE, FALSE, "Evento_Limpar_Janela");
+
+	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
 
 	Handle_Thread_Leitura_Teclado = (HANDLE)_beginthreadex(
 		NULL,
@@ -131,6 +166,28 @@ int main()
 	CloseHandle(Handle_Thread_Captura_Defeitos_Tiras);
 	CloseHandle(Handle_Thread_Captura_Dados_Processos);
 	CloseHandle(Handle_Thread_Leitura_Teclado);
+
+	CloseHandle(Evento_Finalizar_Inspecao_Defeitos);
+	CloseHandle(Evento_Finalizar_Defeitos_Das_Tiras);
+	CloseHandle(Evento_Finalizar_Dados_De_Processo);
+	CloseHandle(Evento_Finalizar_Exibicao_De_Defeitos);
+	CloseHandle(Evento_Finalizar_Exibicao_De_Dados);
+
+	CloseHandle(Evento_Desbloquear_Inspecao_Defeitos);
+	CloseHandle(Evento_Desbloquear_Defeitos_Das_Tiras);
+	CloseHandle(Evento_Desbloquear_Dados_De_Processo);
+	CloseHandle(Evento_Desbloquear_Exibicao_De_Defeitos);
+	CloseHandle(Evento_Desbloquear_Exibicao_De_Dados);
+
+	CloseHandle(Evento_Limpar_Janela);
+
+	CloseHandle(Semaforo_Acesso_Lista_Circular_Livres);
+	CloseHandle(Semaforo_Acesso_Lista_Circular_Ocupados);
+	CloseHandle(Semaforo_Acesso_Lista_Circular_Cheia);
+	CloseHandle(Evento_Lista_Circular_Contem_Dado_Processo);
+	CloseHandle(Evento_Lista_Circular_Contem_Defeito);
+
+	CloseHandle(Mutex_Acesso_Lista_Circular);
 
 	return 0;
 }
