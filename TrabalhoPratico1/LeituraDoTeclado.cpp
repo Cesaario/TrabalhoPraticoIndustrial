@@ -39,6 +39,9 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
+	HANDLE Evento_Timer_Dados_Processo_Executado = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Timer_Dados_Processo_Executado");
+	HANDLE Evento_Timer_Defeitos_Tiras_Executado = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Timer_Defeitos_Tiras_Executado");
+
 	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -123,6 +126,9 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	SetEvent(Evento_Desbloquear_Dados_De_Processo);
 	SetEvent(Evento_Desbloquear_Exibicao_De_Defeitos);
 	SetEvent(Evento_Desbloquear_Exibicao_De_Dados);
+
+	SetEvent(Evento_Timer_Dados_Processo_Executado);
+	SetEvent(Evento_Timer_Defeitos_Tiras_Executado);
 
 	ReleaseMutex(Mutex_Acesso_Lista_Circular);
 

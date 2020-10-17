@@ -50,6 +50,9 @@ HANDLE Evento_Lista_Circular_Contem_Defeito;
 HANDLE Mutex_Acesso_Lista_Circular;
 HANDLE Mutex_Acesso_Console;
 
+HANDLE Evento_Timer_Dados_Processo_Executado;
+HANDLE Evento_Timer_Defeitos_Tiras_Executado;
+
 HANDLE Handle_Console;
 
 int main()
@@ -86,6 +89,9 @@ int main()
 
 	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
 	Mutex_Acesso_Console = CreateMutex(NULL, FALSE, "Mutex_Acesso_Console");
+
+	Evento_Timer_Dados_Processo_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Dados_Processo_Executado");
+	Evento_Timer_Defeitos_Tiras_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Defeitos_Tiras_Executado");
 
 	Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 

@@ -1,6 +1,8 @@
 #include <string>
 #include <windows.h>
+#include <sstream>
 #include "ListaCircular.h"
+#include "Mensagens.h"
 
 #define ROXO FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE
 
@@ -43,4 +45,25 @@ void Print_Snapshot_Lista(HANDLE Mutex_Acesso_Console, HANDLE Handle_Console) {
 	printf("\n");
 
 	ReleaseMutex(Mutex_Acesso_Console);
+}
+
+
+void Adicionar_Mensagem_Na_Lista(std::string mensagem) {
+	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
+
+	WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
+	std::string Mensagem_Atual = Lista_Circular_Memoria[GetPosicaoPonteiro()];;
+	while (Mensagem_Atual.size() != 0) {
+		IncrementarPosicaoPonteiro();
+		Mensagem_Atual = Lista_Circular_Memoria[GetPosicaoPonteiro()];
+	};
+
+	Lista_Circular_Memoria[GetPosicaoPonteiro()] = mensagem;
+
+	std::ostringstream Mensagem_Stream;
+	Mensagem_Stream << "Mensagem \"" << mensagem << "\" adicionada na posicao " << GetPosicaoPonteiro() << " da lista.";
+	MostrarMensagem(Mensagem_Stream.str(), BRANCO);
+
+	IncrementarPosicaoPonteiro();
+	ReleaseMutex(Mutex_Acesso_Lista_Circular);
 }
