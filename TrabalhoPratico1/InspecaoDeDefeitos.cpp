@@ -129,7 +129,7 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Inspecao_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
-
+	DeleteTimerQueueEx(Fila_Temporizadores, NULL);
 	MostrarMensagem("Finalizando thread de inspecao de defeitos...", AMARELO);
 
 	_endthreadex((DWORD)id);
