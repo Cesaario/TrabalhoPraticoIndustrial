@@ -5,12 +5,13 @@
 #include <conio.h>
 #include <errno.h>
 #include <string>
+#include <time.h>
 #include "InspecaoDeDefeitos.h"
 #include "CapturaDefeitosDasTiras.h"
 #include "CapturaDadosDeProcessos.h"
 #include "LeituraDoTeclado.h"
 #include "ListaCircular.h"
-#include <time.h>
+#include "Mensagens.h"
 
 typedef unsigned (WINAPI* CAST_FUNCTION)(LPVOID);
 typedef unsigned* CAST_LPDWORD;
@@ -50,9 +51,6 @@ HANDLE Mutex_Acesso_Lista_Circular;
 HANDLE Mutex_Acesso_Console;
 
 HANDLE Handle_Console;
-
-#define WHITE   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE
-#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
 
 int main()
 {
@@ -169,10 +167,7 @@ int main()
 		return 0;
 	}
 
-	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-	SetConsoleTextAttribute(Handle_Console, YELLOW);
-	printf("Finalizando...");
-	ReleaseMutex(Mutex_Acesso_Console);
+	MostrarMensagem("Finalizando...", AMARELO);
 
 	CloseHandle(Handle_Thread_Sistema_Inspecao_Defeitos);
 	CloseHandle(Handle_Thread_Captura_Defeitos_Tiras);
@@ -201,6 +196,6 @@ int main()
 
 	CloseHandle(Mutex_Acesso_Lista_Circular);
 
-	SetConsoleTextAttribute(Handle_Console, WHITE);
+	SetConsoleTextAttribute(Handle_Console, BRANCO);
 	return 0;
 }

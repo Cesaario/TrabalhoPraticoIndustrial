@@ -2,11 +2,10 @@
 #include <process.h>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include "ListaCircular.h"
 #include "DefeitoSuperficieTira.h"
-
-#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
-#define BLUE   FOREGROUND_BLUE | FOREGROUND_INTENSITY
+#include "Mensagens.h"
 
 int Ponteiro_Leitura_Defeitos = 0;
 
@@ -44,10 +43,9 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 		if (defeito.tipo == 11) {
 			Lista_Circular_Memoria[Ponteiro_Leitura_Defeitos % TAMANHO_LISTA] = "";
 
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, BLUE);
-			printf("[TIPO 11] Mensagem consumida! Posicao: %d\n", Ponteiro_Leitura_Defeitos % TAMANHO_LISTA);
-			ReleaseMutex(Mutex_Acesso_Console);
+			std::ostringstream Mensagem_Stream;
+			Mensagem_Stream << "[TIPO 11] Mensagem consumida! Posicao: " << Ponteiro_Leitura_Defeitos % TAMANHO_LISTA;
+			MostrarMensagem(Mensagem_Stream.str(), AZUL);
 
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
@@ -63,10 +61,7 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Defeitos_Das_Tiras, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
-	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-	SetConsoleTextAttribute(Handle_Console, YELLOW);
-	printf("Finalizando thread de captura de defeitos das tiras...\n");
-	ReleaseMutex(Mutex_Acesso_Console);
+	MostrarMensagem("Finalizando thread de captura de defeitos das tiras...", AMARELO);
 
 	_endthreadex((DWORD)id);
 	return id;

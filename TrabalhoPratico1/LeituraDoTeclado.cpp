@@ -5,17 +5,11 @@
 #include <string>
 #include "LeituraDoTeclado.h"
 #include "ListaCircular.h"
+#include "Mensagens.h"
 
 #define	ESC 0x1B
 #define DESBLOQUEADA true
 #define BLOQUEADA false;
-
-#define DARKRED   FOREGROUND_RED
-#define GRAY   FOREGROUND_INTENSITY
-#define RED   FOREGROUND_INTENSITY | FOREGROUND_RED
-#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
-#define CYAN   FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE
-#define MAGENTA   FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE
 
 int tecla = 0;
 
@@ -61,62 +55,41 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 		switch (tecla) {
 		case 'i':
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de inspecao de defeitos...\n");
-			ReleaseMutex(Mutex_Acesso_Console);
+			MostrarMensagem("Alternando tarefa de inspecao de defeitos...", CIANO);
 			AlternarEvento(Evento_Desbloquear_Inspecao_Defeitos, &Estado_Inspecao_Defeitos);
 			break;
 		case 'd':
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de defeitos das tiras...\n");
-			ReleaseMutex(Mutex_Acesso_Console);
+			MostrarMensagem("Alternando tarefa de defeitos das tiras...", CIANO);
 			AlternarEvento(Evento_Desbloquear_Defeitos_Das_Tiras, &Estado_Defeitos_Das_Tiras);
 			break;
 		case 'e':
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de dados de processo...\n");
-			ReleaseMutex(Mutex_Acesso_Console);
+			MostrarMensagem("Alternando tarefa de dados de processo...", CIANO);
 			AlternarEvento(Evento_Desbloquear_Dados_De_Processo, &Estado_Dados_De_Processo);
 			break;
 		case 'a':
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de exibicao de defeitos...\n");
-			ReleaseMutex(Mutex_Acesso_Console);
+			MostrarMensagem("Alternando tarefa de exibicao de defeitos...", CIANO);
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Defeitos, &Estado_Exibicao_De_Defeitos);
 			break;
 		case 'l':
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, CYAN);
-			printf("Alternando tarefa de exibicao de dados...\n");
-			ReleaseMutex(Mutex_Acesso_Console);
+			MostrarMensagem("Alternando tarefa de exibicao de dados...", CIANO);
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Dados, &Estado_Exibicao_De_Dados);
 			break;
 		case 'c':
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, GRAY);
-			printf("Limpando janela...\n");
-			ReleaseMutex(Mutex_Acesso_Console);
+			MostrarMensagem("Limpando janela...", CINZA);
 			SetEvent(Evento_Limpar_Janela);
 			break;
 		case 'v':
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, MAGENTA);
-			Print_Snapshot_Lista();
-			ReleaseMutex(Mutex_Acesso_Console);
+			Print_Snapshot_Lista(Mutex_Acesso_Console, Handle_Console);
 			break;
 		case 27: //ESC
 			break;
 		default:
 			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, RED);
+			SetConsoleTextAttribute(Handle_Console, VERMELHO);
 			printf("-----------------------\n");
-			SetConsoleTextAttribute(Handle_Console, DARKRED);
+			SetConsoleTextAttribute(Handle_Console, VERMELHO_ESCURO);
 			printf("Comando nao recohecido!\n");
-			SetConsoleTextAttribute(Handle_Console, RED);
+			SetConsoleTextAttribute(Handle_Console, VERMELHO);
 			printf("i: Alterna a tarefa de inspecao de defeitos\n");
 			printf("d: Alterna a tarefa de captura de mensagens de defeitos de tiras\n");
 			printf("e: Alterna a tarefa de captura de mensagens de dados de processo\n");
@@ -153,10 +126,7 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	ReleaseMutex(Mutex_Acesso_Lista_Circular);
 
-	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-	SetConsoleTextAttribute(Handle_Console, YELLOW);
-	printf("Finalizando thread the leitura de teclado\n");
-	ReleaseMutex(Mutex_Acesso_Console);
+	MostrarMensagem("Finalizando thread the leitura de teclado...", AMARELO);
 
 	_endthreadex((DWORD)id);
 	return id;

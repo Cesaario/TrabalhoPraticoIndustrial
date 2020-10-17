@@ -4,14 +4,12 @@
 #include <string>
 #include <time.h>
 #include <iostream>
+#include <sstream>
 #include "ListaCircular.h"
 #include "DefeitoSuperficieTira.h"
 #include "DadosDeProcesso.h"
 #include "RandomUtil.h"
-
-#define RED FOREGROUND_RED | FOREGROUND_INTENSITY
-#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
-#define WHITE   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE
+#include "Mensagens.h"
 
 DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
@@ -50,11 +48,7 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
 		if (Status_Wait_Lista_Livre == WAIT_TIMEOUT) {
-
-			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-			SetConsoleTextAttribute(Handle_Console, RED);
-			printf("Lista circular cheia!!!\n");
-			ReleaseMutex(Mutex_Acesso_Console);
+			MostrarMensagem("Lista circular cheia!!!", VERMELHO);
 
 			WaitForSingleObject(Evento_Lista_Circular_Nao_Cheia, INFINITE);
 			continue;
@@ -69,10 +63,9 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 
 		Lista_Circular_Memoria[GetPosicaoPonteiro()] = mensagem;
 
-		WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-		SetConsoleTextAttribute(Handle_Console, WHITE);
-		std::cout << "Mensagem \"" << mensagem << "\" adicionada na posicao " << GetPosicaoPonteiro() << " da lista." << std::endl;
-		ReleaseMutex(Mutex_Acesso_Console);
+		std::ostringstream Mensagem_Stream;
+		Mensagem_Stream << "Mensagem \"" << mensagem << "\" adicionada na posicao " << GetPosicaoPonteiro() << " da lista.";
+		MostrarMensagem(Mensagem_Stream.str(), BRANCO);
 
 		IncrementarPosicaoPonteiro();
 		ReleaseMutex(Mutex_Acesso_Lista_Circular);
@@ -89,10 +82,7 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Inspecao_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
 
-	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-	SetConsoleTextAttribute(Handle_Console, YELLOW);
-	printf("Finalizando thread de inspecao de defeitos...\n");
-	ReleaseMutex(Mutex_Acesso_Console);
+	MostrarMensagem("Finalizando thread de inspecao de defeitos...", AMARELO);
 
 	_endthreadex((DWORD)id);
 	return id;

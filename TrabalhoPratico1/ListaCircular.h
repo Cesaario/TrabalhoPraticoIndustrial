@@ -5,4 +5,4 @@ extern std::string Lista_Circular_Memoria[];
 
 int GetPosicaoPonteiro();
 void IncrementarPosicaoPonteiro();
-void Print_Snapshot_Lista();
+void Print_Snapshot_Lista(HANDLE Mutex_Acesso_Console, HANDLE Handle_Console);
