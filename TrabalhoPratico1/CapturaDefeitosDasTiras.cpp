@@ -27,6 +27,19 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
+	HANDLE Pipe_Defeitos_Das_Tiras = CreateNamedPipe(
+		"\\\\.\\pipe\\Pipe_Defeitos_Das_Tiras",
+		PIPE_ACCESS_OUTBOUND,
+		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
+		1,
+		64,
+		64,
+		1000,
+		NULL
+	);
+
+	ConnectNamedPipe(Pipe_Defeitos_Das_Tiras, NULL);
+
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Defeitos_Das_Tiras, INFINITE);
 		
@@ -46,6 +59,14 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 			std::ostringstream Mensagem_Stream;
 			Mensagem_Stream << "[TIPO 11] Mensagem consumida! Posicao: " << Ponteiro_Leitura_Defeitos % TAMANHO_LISTA;
 			MostrarMensagem(Mensagem_Stream.str(), AZUL);
+			DWORD Bytes_Escritos;
+			WriteFile(
+				Pipe_Defeitos_Das_Tiras,
+				Proxima_Mensagem_Da_Fila.c_str(),
+				sizeof(char) * Proxima_Mensagem_Da_Fila.length() + 1,
+				&Bytes_Escritos,
+				NULL
+			);
 
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
@@ -60,6 +81,10 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 
 		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Defeitos_Das_Tiras, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);
+
+	FlushFileBuffers(Pipe_Defeitos_Das_Tiras);
+	DisconnectNamedPipe(Pipe_Defeitos_Das_Tiras);
+	CloseHandle(Pipe_Defeitos_Das_Tiras);
 
 	MostrarMensagem("Finalizando thread de captura de defeitos das tiras...", AMARELO);
 
