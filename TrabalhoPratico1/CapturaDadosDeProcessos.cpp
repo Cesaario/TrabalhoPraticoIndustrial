@@ -27,6 +27,16 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
+	HANDLE Arquivo_Dados_De_Processo = CreateFile(
+		"DadosProcesso.txt",
+		GENERIC_WRITE,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		0,
+		NULL
+	);
+
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
 		
@@ -46,6 +56,15 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 			std::ostringstream Mensagem_Stream;
 			Mensagem_Stream << "[TIPO 22] Mensagem consumida! Posicao: " << Ponteiro_Leitura_Dados % TAMANHO_LISTA;
 			MostrarMensagem(Mensagem_Stream.str(), VERDE);
+
+			DWORD Bytes_Escritos;
+			WriteFile(
+				Arquivo_Dados_De_Processo,
+				Proxima_Mensagem_Da_Fila.c_str(),
+				sizeof(char) * Proxima_Mensagem_Da_Fila.length(),
+				&Bytes_Escritos,
+				NULL
+			);
 
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
