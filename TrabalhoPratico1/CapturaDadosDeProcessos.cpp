@@ -38,7 +38,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		GENERIC_WRITE,
 		FILE_SHARE_READ,
 		NULL,
-		CREATE_ALWAYS,
+		OPEN_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL,
 		NULL
 	);

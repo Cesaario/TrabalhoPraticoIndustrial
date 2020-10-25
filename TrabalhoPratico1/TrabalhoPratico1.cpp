@@ -151,7 +151,7 @@ int main()
 		FALSE,								 // Heran�a de handles
 		CREATE_NEW_CONSOLE,					 // Flags de cria��o
 		NULL,								 // Heran�a do amniente de execu��o
-		"C:\\Windows",						 // Diret�rio do arquivo execut�vel
+		NULL,						 // Diret�rio do arquivo execut�vel
 		&si,								 // lpStartUpInfo
 		&NewProcess);						 // lpProcessInformation
 
@@ -163,7 +163,7 @@ int main()
 		FALSE,									  // Heran�a de handles
 		CREATE_NEW_CONSOLE,						  // Flags de cria��o
 		NULL,									  // Heran�a do amniente de execu��o
-		"C:\\Windows",							  // Diret�rio do arquivo execut�vel
+		NULL,							  // Diret�rio do arquivo execut�vel
 		&si,									  // lpStartUpInfo
 		&NewProcess);							  // lpProcessInformation
 

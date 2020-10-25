@@ -8,11 +8,14 @@
 
 #define TAMANHO_ARQUIVO 46
 
-int Ponteiro_Leitura_Arquivo = 0;
 
 int main()
 {
 	printf("Processo de exibicao de dados de processo iniciando...\n");
+
+	TCHAR NPath[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, NPath);
+	printf("DIR: %s\n", NPath);
 
 	DWORD resultadoEvento = 0;
 	DWORD resultadoWait = 0;
@@ -31,7 +34,7 @@ int main()
 		GENERIC_READ,
 		FILE_SHARE_WRITE,
 		NULL,
-		OPEN_EXISTING,
+		OPEN_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL,
 		NULL
 	);
@@ -40,31 +43,31 @@ int main()
 	{
 		printf("a8sgdy8ag %d\n", GetLastError());
 	}
-	printf("Com string! %d\n", GetLastError());
+	printf("Com stringaAASDASDA! %d\n", GetLastError());
 
 	int contador = 0;
+	int Ponteiro_Leitura_Arquivo = 0;
 
 	do {
 		resultadoWait = WaitForMultipleObjects(2, Handles_Tarefa_Exibicao_De_Dados, FALSE, INFINITE);
 		
 		SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
 		LockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
+		DWORD Bytes_Lidos;
 		char Mensagem_Arquivo[TAMANHO_ARQUIVO];
 		bool res = ReadFile(
 			Arquivo_Dados_De_Processo,
 			&Mensagem_Arquivo,
 			sizeof(char) * TAMANHO_ARQUIVO,
-			NULL,
+			&Bytes_Lidos,
 			NULL
 		);
-		printf("Leitura! %d %d\n", res, GetLastError());
 		std::cout << std::string(Mensagem_Arquivo) << std::endl;
 		UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
 
-		std::cout << Mensagem_Arquivo << std::endl;
 		Ponteiro_Leitura_Arquivo++;
 
-		//ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
+		ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
 		SetEvent(Evento_Arquivo_Nao_Cheio);
 
 		Sleep(1000);
