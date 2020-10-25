@@ -8,6 +8,9 @@
 #include "Mensagens.h"
 
 int Ponteiro_Leitura_Dados = 0;
+int Ponteiro_Escrita_Arquivos = 0;
+
+#define TAMANHO_ARQUIVO 46
 
 DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
@@ -24,16 +27,19 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
+	HANDLE Semaforo_Arquivo_Dados_Processo_Livre = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Arquivo_Dados_Processo_Livre");
+	HANDLE Evento_Arquivo_Nao_Cheio = OpenEvent(SYNCHRONIZE, false, "Evento_Arquivo_Nao_Cheio");
+
 	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	HANDLE Arquivo_Dados_De_Processo = CreateFile(
-		"DadosProcesso.txt",
+		"..\\DadosProcesso.txt",
 		GENERIC_WRITE,
-		0,
+		FILE_SHARE_READ,
 		NULL,
 		CREATE_ALWAYS,
-		0,
+		FILE_ATTRIBUTE_NORMAL,
 		NULL
 	);
 
@@ -43,6 +49,14 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		int Status_Wait_Lista_Ocupada = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Ocupados, 0);
 		if (Status_Wait_Lista_Ocupada == WAIT_TIMEOUT) {
 			WaitForSingleObject(Evento_Lista_Circular_Contem_Dado_Processo, INFINITE);
+			continue;
+		}
+
+		int Status_Semaforo_Arquivo = WaitForSingleObject(Semaforo_Arquivo_Dados_Processo_Livre, 0);
+		if (Status_Semaforo_Arquivo == WAIT_TIMEOUT) {
+			MostrarMensagem("Arquivo cheio!!!", VERMELHO);
+			WaitForSingleObject(Evento_Arquivo_Nao_Cheio, INFINITE);
+			MostrarMensagem("Arquivo liberado!!!", CIANO);
 			continue;
 		}
 
@@ -58,16 +72,22 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 			MostrarMensagem(Mensagem_Stream.str(), VERDE);
 
 			DWORD Bytes_Escritos;
+
+			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
+			LockFile(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, sizeof(char) * TAMANHO_ARQUIVO, NULL);
 			WriteFile(
 				Arquivo_Dados_De_Processo,
 				Proxima_Mensagem_Da_Fila.c_str(),
-				sizeof(char) * Proxima_Mensagem_Da_Fila.length(),
+				sizeof(char) * TAMANHO_ARQUIVO,
 				&Bytes_Escritos,
 				NULL
 			);
+			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, sizeof(char) * TAMANHO_ARQUIVO, NULL);
+
 
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
+			Ponteiro_Escrita_Arquivos = (Ponteiro_Escrita_Arquivos + 1) % 100;
 		}
 		else {
 			//A tarefa nao corresponde ao tipo procurado, portanto, nao vamos retira-la.
