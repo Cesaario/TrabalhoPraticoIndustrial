@@ -167,6 +167,7 @@ int main()
 		&si,									  // lpStartUpInfo
 		&NewProcess);							  // lpProcessInformation
 
+
 	HANDLE Threads[4] = {
 		Handle_Thread_Sistema_Inspecao_Defeitos,
 		Handle_Thread_Captura_Defeitos_Tiras,

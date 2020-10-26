@@ -26,21 +26,22 @@ int main()
 	HANDLE Evento_Limpar_Janela = OpenEvent(SYNCHRONIZE, false, "Evento_Limpar_Janela");
 
 	HANDLE Semaforo_Arquivo_Dados_Processo_Livre = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Arquivo_Dados_Processo_Livre");
-	printf("%d", GetLastError());
 	HANDLE Evento_Arquivo_Nao_Cheio = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Arquivo_Nao_Cheio");
 
 	HANDLE Handles_Tarefa_Exibicao_De_Dados[] = { Evento_Limpar_Janela, Evento_Desbloquear_Exibicao_De_Dados };
 
-	WaitNamedPipe("Pipe_Dados_De_Processo", NMPWAIT_USE_DEFAULT_WAIT);
-	HANDLE Pipe_Dados_De_Processo = CreateFile(
+	HANDLE Pipe_Dados_De_Processo = CreateNamedPipe(
 		"\\\\.\\pipe\\Pipe_Dados_De_Processo",
-		GENERIC_READ,
-		0,
-		NULL,
-		CREATE_ALWAYS,
-		0,
+		PIPE_ACCESS_INBOUND,
+		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
+		1,
+		64,
+		64,
+		10000,
 		NULL
 	);
+
+	ConnectNamedPipe(Pipe_Dados_De_Processo, NULL);
 
 	HANDLE Arquivo_Dados_De_Processo = CreateFile(
 		"..\\DadosProcesso.txt",

@@ -43,18 +43,20 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		NULL
 	);
 
-	HANDLE Pipe_Dados_De_Processo = CreateNamedPipe(
-		"\\\\.\\pipe\\Pipe_Dados_De_Processo",
-		PIPE_ACCESS_OUTBOUND,
-		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
-		2,
-		64,
-		64,
-		1000,
-		NULL
-	);
+	HANDLE Pipe_Dados_De_Processo;
+	do {
+		Pipe_Dados_De_Processo = CreateFile(
+			"\\\\.\\pipe\\Pipe_Dados_De_Processo",
+			GENERIC_WRITE,
+			NULL,
+			NULL,
+			OPEN_EXISTING,
+			FILE_ATTRIBUTE_NORMAL,
+			NULL
+		);
+	} while (Pipe_Dados_De_Processo == INVALID_HANDLE_VALUE);
 
-	ConnectNamedPipe(Pipe_Dados_De_Processo, NULL);
+	printf("Pipe conecetado!\n");
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
