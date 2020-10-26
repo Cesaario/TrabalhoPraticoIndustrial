@@ -8,6 +8,7 @@
 
 #define TAMANHO_ARQUIVO 46
 
+int Ponteiro_Leitura_Arquivo = 0;
 
 int main()
 {
@@ -25,52 +26,60 @@ int main()
 	HANDLE Evento_Limpar_Janela = OpenEvent(SYNCHRONIZE, false, "Evento_Limpar_Janela");
 
 	HANDLE Semaforo_Arquivo_Dados_Processo_Livre = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Arquivo_Dados_Processo_Livre");
+	printf("%d", GetLastError());
 	HANDLE Evento_Arquivo_Nao_Cheio = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Arquivo_Nao_Cheio");
 
 	HANDLE Handles_Tarefa_Exibicao_De_Dados[] = { Evento_Limpar_Janela, Evento_Desbloquear_Exibicao_De_Dados };
+
+	WaitNamedPipe("Pipe_Dados_De_Processo", NMPWAIT_USE_DEFAULT_WAIT);
+	HANDLE Pipe_Dados_De_Processo = CreateFile(
+		"\\\\.\\pipe\\Pipe_Dados_De_Processo",
+		GENERIC_READ,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		0,
+		NULL
+	);
 
 	HANDLE Arquivo_Dados_De_Processo = CreateFile(
 		"..\\DadosProcesso.txt",
 		GENERIC_READ,
 		FILE_SHARE_WRITE,
 		NULL,
-		OPEN_ALWAYS,
+		OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL,
 		NULL
 	);
 
-	if (Arquivo_Dados_De_Processo == INVALID_HANDLE_VALUE)
-	{
-		printf("a8sgdy8ag %d\n", GetLastError());
-	}
-	printf("Com stringaAASDASDA! %d\n", GetLastError());
-
 	int contador = 0;
-	int Ponteiro_Leitura_Arquivo = 0;
 
 	do {
 		resultadoWait = WaitForMultipleObjects(2, Handles_Tarefa_Exibicao_De_Dados, FALSE, INFINITE);
 		
-		SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
-		LockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
-		DWORD Bytes_Lidos;
-		char Mensagem_Arquivo[TAMANHO_ARQUIVO];
-		bool res = ReadFile(
-			Arquivo_Dados_De_Processo,
-			&Mensagem_Arquivo,
-			sizeof(char) * TAMANHO_ARQUIVO,
-			&Bytes_Lidos,
-			NULL
-		);
-		std::cout << std::string(Mensagem_Arquivo) << std::endl;
-		UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
+		char Buffer_Mensagem_Pipe;
+		ReadFile(Pipe_Dados_De_Processo, &Buffer_Mensagem_Pipe, sizeof(char), NULL, NULL);
 
-		Ponteiro_Leitura_Arquivo++;
+		if (Buffer_Mensagem_Pipe == '1') {
+			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
+			LockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
+			DWORD Bytes_Lidos;
+			char Mensagem_Arquivo[TAMANHO_ARQUIVO];
+			bool res = ReadFile(
+				Arquivo_Dados_De_Processo,
+				&Mensagem_Arquivo,
+				sizeof(char) * TAMANHO_ARQUIVO,
+				&Bytes_Lidos,
+				NULL
+			);
+			std::cout << std::string(Mensagem_Arquivo) << std::endl;
+			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
 
-		ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
-		SetEvent(Evento_Arquivo_Nao_Cheio);
+			Ponteiro_Leitura_Arquivo++;
 
-		Sleep(1000);
+			int status = ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
+			SetEvent(Evento_Arquivo_Nao_Cheio);
+		}
 
 		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Exibicao_De_Dados, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);

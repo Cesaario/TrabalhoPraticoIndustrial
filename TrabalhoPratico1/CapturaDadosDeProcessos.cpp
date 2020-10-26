@@ -38,10 +38,23 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		GENERIC_WRITE,
 		FILE_SHARE_READ,
 		NULL,
-		OPEN_ALWAYS,
+		CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL,
 		NULL
 	);
+
+	HANDLE Pipe_Dados_De_Processo = CreateNamedPipe(
+		"\\\\.\\pipe\\Pipe_Dados_De_Processo",
+		PIPE_ACCESS_OUTBOUND,
+		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
+		2,
+		64,
+		64,
+		1000,
+		NULL
+	);
+
+	ConnectNamedPipe(Pipe_Dados_De_Processo, NULL);
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
@@ -59,6 +72,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 			MostrarMensagem("Arquivo liberado!!!", CIANO);
 			continue;
 		}
+		ResetEvent(Evento_Arquivo_Nao_Cheio);
 
 		WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
 		std::string Proxima_Mensagem_Da_Fila = Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA];
@@ -84,6 +98,14 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 			);
 			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, sizeof(char) * TAMANHO_ARQUIVO, NULL);
 
+			char Mensagem_Novos_Dados = '1';
+			WriteFile(
+				Pipe_Dados_De_Processo,
+				&Mensagem_Novos_Dados,
+				sizeof(char),
+				&Bytes_Escritos,
+				NULL
+			);
 
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 			SetEvent(Evento_Lista_Circular_Nao_Cheia);
@@ -92,6 +114,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		else {
 			//A tarefa nao corresponde ao tipo procurado, portanto, nao vamos retira-la.
 			ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
+			ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
 		}
 
 		Ponteiro_Leitura_Dados++;
