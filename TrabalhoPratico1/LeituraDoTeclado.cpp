@@ -42,6 +42,9 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Evento_Timer_Dados_Processo_Executado = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Timer_Dados_Processo_Executado");
 	HANDLE Evento_Timer_Defeitos_Tiras_Executado = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Timer_Defeitos_Tiras_Executado");
 
+	HANDLE Semaforo_Arquivo_Dados_Processo_Livre = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Arquivo_Dados_Processo_Livre");
+	HANDLE Evento_Arquivo_Nao_Cheio = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Arquivo_Nao_Cheio");
+
 	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -118,6 +121,7 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Livres, 1, NULL);
 	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 2, NULL);
 	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Cheia, 1, NULL);
+	ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
 
 	SetEvent(Evento_Lista_Circular_Contem_Defeito);
 	SetEvent(Evento_Lista_Circular_Contem_Dado_Processo);
@@ -129,6 +133,8 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	SetEvent(Evento_Timer_Dados_Processo_Executado);
 	SetEvent(Evento_Timer_Defeitos_Tiras_Executado);
+
+	SetEvent(Evento_Arquivo_Nao_Cheio);
 
 	ReleaseMutex(Mutex_Acesso_Lista_Circular);
 
