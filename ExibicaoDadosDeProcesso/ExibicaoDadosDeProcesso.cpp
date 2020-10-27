@@ -34,7 +34,7 @@ int main()
 		"\\\\.\\pipe\\Pipe_Dados_De_Processo",
 		PIPE_ACCESS_INBOUND,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
-		1,
+		200,
 		64,
 		64,
 		10000,
@@ -60,7 +60,7 @@ int main()
 		
 		char Buffer_Mensagem_Pipe;
 		ReadFile(Pipe_Dados_De_Processo, &Buffer_Mensagem_Pipe, sizeof(char), NULL, NULL);
-
+		printf("LEITURAAAA: %c\n", Buffer_Mensagem_Pipe);
 		if (Buffer_Mensagem_Pipe == '1') {
 			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
 			LockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);

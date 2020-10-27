@@ -54,9 +54,11 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 			FILE_ATTRIBUTE_NORMAL,
 			NULL
 		);
+		printf("\n\n%d\n\n", GetLastError());
+		Sleep(1000);
 	} while (Pipe_Dados_De_Processo == INVALID_HANDLE_VALUE);
 
-	printf("Pipe conecetado!\n");
+	printf("Pipe conecetado na tarefa CapturaDadosDeProcessos!\n");
 
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);

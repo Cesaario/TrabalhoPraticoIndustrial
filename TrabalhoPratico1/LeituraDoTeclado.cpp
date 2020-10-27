@@ -48,12 +48,31 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
+	HANDLE Pipe_Dados_De_Processo;
+	do {
+		Pipe_Dados_De_Processo = CreateFile(
+			"\\\\.\\pipe\\Pipe_Dados_De_Processo",
+			GENERIC_WRITE,
+			NULL,
+			NULL,
+			OPEN_EXISTING,
+			NULL,
+			NULL
+		);
+		printf("\n\n%d\n\n", GetLastError());
+		Sleep(1000);
+	} while (Pipe_Dados_De_Processo == INVALID_HANDLE_VALUE);
+
+	printf("Pipe conecetado na tarefa LeituraDoTeclado!\n");
+
 	bool Estado_Inspecao_Defeitos = DESBLOQUEADA;
 	bool Estado_Defeitos_Das_Tiras = DESBLOQUEADA;
 	bool Estado_Dados_De_Processo = DESBLOQUEADA;
 	bool Estado_Exibicao_De_Defeitos = DESBLOQUEADA;
 	bool Estado_Exibicao_De_Dados = DESBLOQUEADA;
 
+	char Mensagem_Limpar_Tela = '2';
+	DWORD Bytes_Escritos;
 	//TODO: Tratamento de erros.
 
 	do{
@@ -82,7 +101,13 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 			break;
 		case 'c':
 			MostrarMensagem("Limpando janela...", CINZA);
-			SetEvent(Evento_Limpar_Janela);
+			WriteFile(
+				Pipe_Dados_De_Processo,
+				&Mensagem_Limpar_Tela,
+				sizeof(char),
+				&Bytes_Escritos,
+				NULL
+			);
 			break;
 		case 'v':
 			Print_Snapshot_Lista(Mutex_Acesso_Console, Handle_Console);
