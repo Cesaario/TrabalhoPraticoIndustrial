@@ -54,6 +54,22 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	bool Estado_Exibicao_De_Defeitos = DESBLOQUEADA;
 	bool Estado_Exibicao_De_Dados = DESBLOQUEADA;
 
+	char Mensagem_Novos_Dados = '1';
+	DWORD Bytes_Escritos;
+
+	HANDLE Pipe_Limpar_Tela = CreateNamedPipe(
+		"\\\\.\\pipe\\Pipe_Limpar_Tela",
+		PIPE_ACCESS_OUTBOUND,
+		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
+		2,
+		64,
+		64,
+		1000,
+		NULL
+	);
+
+	ConnectNamedPipe(Pipe_Limpar_Tela, NULL);
+
 	//TODO: Tratamento de erros.
 
 	do{
@@ -82,7 +98,13 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 			break;
 		case 'c':
 			MostrarMensagem("Limpando janela...", CINZA);
-			SetEvent(Evento_Limpar_Janela);
+			WriteFile(
+				Pipe_Limpar_Tela,
+				&Mensagem_Novos_Dados,
+				sizeof(char),
+				&Bytes_Escritos,
+				NULL
+			);
 			break;
 		case 'v':
 			Print_Snapshot_Lista(Mutex_Acesso_Console, Handle_Console);

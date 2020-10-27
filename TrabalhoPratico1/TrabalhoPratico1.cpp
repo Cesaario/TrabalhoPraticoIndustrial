@@ -97,7 +97,7 @@ int main()
 	Evento_Timer_Dados_Processo_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Dados_Processo_Executado");
 	Evento_Timer_Defeitos_Tiras_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Defeitos_Tiras_Executado");
 
-	Semaforo_Arquivo_Dados_Processo_Livre = CreateSemaphore(NULL, 10, 10, "Semaforo_Arquivo_Dados_Processo_Livre");
+	Semaforo_Arquivo_Dados_Processo_Livre = CreateSemaphore(NULL, 100, 100, "Semaforo_Arquivo_Dados_Processo_Livre");
 	//Semaforo_Arquivo_Dados_Processo_Ocupado = CreateSemaphore(NULL, 10, 10, "Semaforo_Arquivo_Dados_Processo_Ocupado");
 	Evento_Arquivo_Nao_Cheio = CreateEvent(NULL, FALSE, FALSE, "Evento_Arquivo_Nao_Cheio");
 
