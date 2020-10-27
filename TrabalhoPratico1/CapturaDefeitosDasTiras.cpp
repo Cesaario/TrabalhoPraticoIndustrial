@@ -32,8 +32,8 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 		PIPE_ACCESS_OUTBOUND,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
 		1,
-		sizeof(char) * 37 * 100,
-		sizeof(char) * 37 * 100,
+		sizeof(char) * 37 * 1000,
+		sizeof(char) * 37 * 1000,
 		1000,
 		NULL
 	);

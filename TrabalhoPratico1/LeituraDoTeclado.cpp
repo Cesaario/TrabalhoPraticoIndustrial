@@ -62,8 +62,8 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 		PIPE_ACCESS_OUTBOUND,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
 		2,
-		64,
-		64,
+		sizeof(char) * 1000,
+		sizeof(char) * 1000,
 		1000,
 		NULL
 	);
