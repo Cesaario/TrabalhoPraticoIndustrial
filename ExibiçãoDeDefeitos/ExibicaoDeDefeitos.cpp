@@ -11,6 +11,8 @@ int main()
 {
     printf("Processo de exibicao de defeitos iniciando...\n");
 
+	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(Handle_Console, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	DWORD resultadoEvento;
 
 	HANDLE Evento_Nao_Finalizar_Exibicao_De_Defeitos = OpenEvent(SYNCHRONIZE, false, "Evento_Nao_Finalizar_Exibicao_De_Defeitos");
@@ -37,7 +39,7 @@ int main()
 		ReadFile(
 			Pipe_Defeitos_Das_Tiras,
 			Mensagem_Lida,
-			64,
+			37,
 			&Bytes_Lidos,
 			NULL
 		);
