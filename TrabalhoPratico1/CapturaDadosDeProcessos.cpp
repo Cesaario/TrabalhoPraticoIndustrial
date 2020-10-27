@@ -47,9 +47,9 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		"\\\\.\\pipe\\Pipe_Dados_De_Processo",
 		PIPE_ACCESS_OUTBOUND,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE,
-		2,
-		64,
-		64,
+		1,
+		sizeof(char),
+		sizeof(char),
 		1000,
 		NULL
 	);
