@@ -35,14 +35,14 @@ VOID CALLBACK Rotina_Mensagem_Defeitos_Tiras(PVOID param, BOOLEAN TimerOrWaitFir
 	std::string mensagem = SerializarDefeitoTira(GerarDefeitoTira());
 
 	Adicionar_Mensagem_Na_Lista(mensagem);
-	int status = SetEvent(Evento_Lista_Circular_Contem_Defeito);
-	int status2 = ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
+	SetEvent(Evento_Lista_Circular_Contem_Defeito);
+	ReleaseSemaphore(Semaforo_Acesso_Lista_Circular_Ocupados, 1, NULL);
 
 	SetEvent(Evento_Timer_Defeitos_Tiras_Executado);
 }
 
 void Criar_Timer_Dados_Processo(HANDLE* Temporizador_Dados_Processo, HANDLE* Fila_Temporizadores) {
-	int status = CreateTimerQueueTimer(
+	CreateTimerQueueTimer(
 		Temporizador_Dados_Processo,
 		*Fila_Temporizadores,
 		(WAITORTIMERCALLBACK)Rotina_Mensagem_Dados_Processo,

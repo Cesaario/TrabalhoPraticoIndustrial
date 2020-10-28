@@ -1,4 +1,3 @@
-#pragma warning(disable:4996)
 #include "DadosDeProcesso.h"
 #include <time.h>
 #include "RandomUtil.h"
@@ -13,9 +12,9 @@ DadosProcesso GerarDadosProcesso() {
 	dados.numero = Numero_Dado_Processo;
 	dados.tipo = 22;
 	dados.cadeira = rand() % 6 + 1;
-	dados.id = GerarIdAleatorio(8);
-	dados.temp = 200.0f + (((float)rand() / (float)(RAND_MAX)) * 800);
-	dados.vel = 200.0f + (((float)rand() / (float)(RAND_MAX)) * 800);
+	dados.id = GerarIdAleatorio(MENSAGEM_DADO);
+	dados.temp = 200.0f + (((float)rand() / (float)(RAND_MAX)) * 800.0f);
+	dados.vel = 200.0f + (((float)rand() / (float)(RAND_MAX)) * 800.0f);
 	dados.tempo = GerarTempoAtual();
 
 	Numero_Dado_Processo++;
@@ -30,15 +29,15 @@ std::string SerializarDadosProcesso(DadosProcesso dados) {
 	char VEL_Formatado[6];
 	char TEMPO_Formatado[13];
 
-	sprintf(NSEQ_Formatado, "%05d", dados.numero);
-	sprintf(CADEIRA_Formatado, "%02d", dados.cadeira);
-	strcpy(ID_Formatado, dados.id.c_str());
-	sprintf(TEMP_Formatado, "%05.1f", dados.temp);
-	sprintf(VEL_Formatado, "%05.1f", dados.vel);
-	strcpy(TEMPO_Formatado, SerializarTempo(dados.tempo).c_str());
+	sprintf_s(NSEQ_Formatado, 6, "%05d", dados.numero);
+	sprintf_s(CADEIRA_Formatado, 3, "%02d", dados.cadeira);
+	strcpy_s(ID_Formatado, 9, dados.id.c_str());
+	sprintf_s(TEMP_Formatado, 6, "%05.1f", dados.temp);
+	sprintf_s(VEL_Formatado, 6, "%05.1f", dados.vel);
+	strcpy_s(TEMPO_Formatado, 13, SerializarTempo(dados.tempo).c_str());
 
 	char Mensagem_Serializada[46];
-	sprintf(Mensagem_Serializada, "%s/%d/%s/%s/%s/%s/%s",
+	sprintf_s(Mensagem_Serializada, 46, "%s/%d/%s/%s/%s/%s/%s",
 		NSEQ_Formatado,
 		dados.tipo,
 		CADEIRA_Formatado,

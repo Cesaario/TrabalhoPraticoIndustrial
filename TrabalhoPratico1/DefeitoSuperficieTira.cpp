@@ -1,4 +1,3 @@
-#pragma warning(disable:4996)
 #include "DefeitoSuperficieTira.h"
 #include <time.h>
 #include "RandomUtil.h"
@@ -15,7 +14,7 @@ DefeitoTira GerarDefeitoTira() {
 	defeito.cadeira = rand() % 6 + 1;
 	defeito.gravidade = rand() % 100;
 	defeito.classe = rand() % 9 + 1;
-	defeito.id_foto = GerarIdAleatorio(6);
+	defeito.id_foto = GerarIdAleatorio(MENSAGEM_DEFEITO);
 	defeito.tempo = GerarTempoAtual();
 
 	Numero_Defeito_Tira++;
@@ -29,14 +28,14 @@ std::string SerializarDefeitoTira(DefeitoTira defeito) {
 	char ID_FOTO_Formatado[7];
 	char TEMPO_Formatado[13];
 
-	sprintf(NSEQ_Formatado, "%05d", defeito.numero);
-	sprintf(CADEIRA_Formatado, "%02d", defeito.cadeira);
-	sprintf(GRAVIDADE_Formatado, "%02d", defeito.gravidade);
-	strcpy(ID_FOTO_Formatado, defeito.id_foto.c_str());
-	strcpy(TEMPO_Formatado, SerializarTempo(defeito.tempo).c_str());
+	sprintf_s(NSEQ_Formatado, 6, "%05d", defeito.numero);
+	sprintf_s(CADEIRA_Formatado, 3, "%02d", defeito.cadeira);
+	sprintf_s(GRAVIDADE_Formatado, 3, "%02d", defeito.gravidade);
+	strcpy_s(ID_FOTO_Formatado, 7, defeito.id_foto.c_str());
+	strcpy_s(TEMPO_Formatado, 13, SerializarTempo(defeito.tempo).c_str());
 
 	char Mensagem_Serializada[37];
-	sprintf(Mensagem_Serializada, "%s/%d/%s/%s/%d/%s/%s",
+	sprintf_s(Mensagem_Serializada, 37, "%s/%d/%s/%s/%d/%s/%s",
 		NSEQ_Formatado,
 		defeito.tipo,
 		CADEIRA_Formatado,

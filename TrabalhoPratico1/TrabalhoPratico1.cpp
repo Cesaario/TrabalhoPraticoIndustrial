@@ -54,7 +54,6 @@ HANDLE Evento_Timer_Dados_Processo_Executado;
 HANDLE Evento_Timer_Defeitos_Tiras_Executado;
 
 HANDLE Semaforo_Arquivo_Dados_Processo_Livre;
-//HANDLE Semaforo_Arquivo_Dados_Processo_Ocupado;
 HANDLE Evento_Arquivo_Nao_Cheio;
 
 HANDLE Handle_Console;
