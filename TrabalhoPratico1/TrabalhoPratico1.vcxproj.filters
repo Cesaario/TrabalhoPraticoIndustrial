@@ -48,6 +48,9 @@
     <ClCompile Include="ListaCircular.cpp">
       <Filter>Arquivos de Origem\Util</Filter>
     </ClCompile>
+    <ClCompile Include="Mensagens.cpp">
+      <Filter>Arquivos de Origem\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InspecaoDeDefeitos.h">
@@ -75,6 +78,9 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="DadosDeProcesso.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Mensagens.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>

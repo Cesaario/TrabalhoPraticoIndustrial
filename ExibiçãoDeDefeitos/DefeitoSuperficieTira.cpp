@@ -1,7 +1,7 @@
-#include "DefeitoSuperficieTira.h"
 #include <time.h>
-#include "RandomUtil.h"
 #include <string>
+#include "DefeitoSuperficieTira.h"
+#include "RandomUtil.h"
 
 int Numero_Defeito_Tira = 1;
 
@@ -61,8 +61,8 @@ std::string FormatarDefeitoTira(DefeitoTira defeito) {
 	strcpy_s(ID_FOTO_Formatado, 7, defeito.id_foto.c_str());
 	strcpy_s(TEMPO_Formatado, 13, SerializarTempo(defeito.tempo).c_str());
 
-	char Mensagem_Formatada[81];
-	sprintf_s(Mensagem_Formatada, 81, "%s NSEQ: %s CAD: %s ID FOTO: %s GRAV: %s CLASSE: %d",
+	char Mensagem_Formatada[71];
+	sprintf_s(Mensagem_Formatada, 71, "%s NSEQ: %s CAD: %s ID FOTO: %s GRAV: %s CLASSE: %d",
 		TEMPO_Formatado,
 		NSEQ_Formatado,
 		CADEIRA_Formatado,

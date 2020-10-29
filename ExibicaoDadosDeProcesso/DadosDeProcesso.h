@@ -16,6 +16,6 @@ DadosProcesso GerarDadosProcesso();
 
 std::string SerializarDadosProcesso(DadosProcesso dados);
 
-std::string FormatarDadosProcesso(DadosProcesso dados);
-
 DadosProcesso DesserializarDadosProcesso(std::string dadosString);
+
+std::string FormatarDadosProcesso(DadosProcesso dados);

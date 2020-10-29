@@ -146,11 +146,13 @@
     <ClCompile Include="DefeitoSuperficieTira.cpp" />
     <ClCompile Include="LeituraDoTeclado.cpp" />
     <ClCompile Include="ListaCircular.cpp" />
+    <ClCompile Include="Mensagens.cpp" />
     <ClCompile Include="RandomUtil.cpp" />
     <ClCompile Include="Tempo.cpp" />
     <ClCompile Include="TrabalhoPratico1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Mensagens.h" />
     <ClInclude Include="RandomUtil.h" />
     <ClInclude Include="DadosDeProcesso.h" />
     <ClInclude Include="LeituraDoTeclado.h" />

@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30406.217
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrabalhoPratico1", "TrabalhoPratico1\TrabalhoPratico1.vcxproj", "{900416A2-89C0-4ABC-912C-028D5DEC9E0B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D9585615-3305-4204-A8F8-3268EE025B6F} = {D9585615-3305-4204-A8F8-3268EE025B6F}
+		{52B712C0-EA05-4275-9C5F-6CAB66D2D70B} = {52B712C0-EA05-4275-9C5F-6CAB66D2D70B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExibicaoDeDefeitos", "ExibiçãoDeDefeitos\ExibiçãoDeDefeitos.vcxproj", "{D9585615-3305-4204-A8F8-3268EE025B6F}"
 EndProject

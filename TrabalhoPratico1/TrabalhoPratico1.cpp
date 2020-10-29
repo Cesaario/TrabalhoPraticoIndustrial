@@ -5,12 +5,13 @@
 #include <conio.h>
 #include <errno.h>
 #include <string>
+#include <time.h>
 #include "InspecaoDeDefeitos.h"
 #include "CapturaDefeitosDasTiras.h"
 #include "CapturaDadosDeProcessos.h"
 #include "LeituraDoTeclado.h"
 #include "ListaCircular.h"
-#include <time.h>
+#include "Mensagens.h"
 
 typedef unsigned (WINAPI* CAST_FUNCTION)(LPVOID);
 typedef unsigned* CAST_LPDWORD;
@@ -49,10 +50,14 @@ HANDLE Evento_Lista_Circular_Contem_Defeito;
 HANDLE Mutex_Acesso_Lista_Circular;
 HANDLE Mutex_Acesso_Console;
 
-HANDLE Handle_Console;
+HANDLE Evento_Timer_Dados_Processo_Executado;
+HANDLE Evento_Timer_Defeitos_Tiras_Executado;
 
-#define WHITE   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE
-#define YELLOW   FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY
+HANDLE Semaforo_Arquivo_Dados_Processo_Livre;
+HANDLE Evento_Arquivo_Nao_Cheio;
+HANDLE Mutex_Acesso_Arquivo;
+
+HANDLE Handle_Console;
 
 int main()
 {
@@ -84,10 +89,15 @@ int main()
 	Evento_Lista_Circular_Contem_Dado_Processo = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Dado_Processo");
 	Evento_Lista_Circular_Contem_Defeito = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Defeito");
 
-	Evento_Limpar_Janela = CreateEvent(NULL, FALSE, FALSE, "Evento_Limpar_Janela");
-
 	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
 	Mutex_Acesso_Console = CreateMutex(NULL, FALSE, "Mutex_Acesso_Console");
+
+	Evento_Timer_Dados_Processo_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Dados_Processo_Executado");
+	Evento_Timer_Defeitos_Tiras_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Defeitos_Tiras_Executado");
+	Mutex_Acesso_Arquivo = CreateMutex(NULL, FALSE, "Mutex_Acesso_Arquivo");
+
+	Semaforo_Arquivo_Dados_Processo_Livre = CreateSemaphore(NULL, 100, 100, "Semaforo_Arquivo_Dados_Processo_Livre");
+	Evento_Arquivo_Nao_Cheio = CreateEvent(NULL, FALSE, FALSE, "Evento_Arquivo_Nao_Cheio");
 
 	Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -139,7 +149,7 @@ int main()
 		FALSE,								 // Heran�a de handles
 		CREATE_NEW_CONSOLE,					 // Flags de cria��o
 		NULL,								 // Heran�a do amniente de execu��o
-		"C:\\Windows",						 // Diret�rio do arquivo execut�vel
+		NULL,						 // Diret�rio do arquivo execut�vel
 		&si,								 // lpStartUpInfo
 		&NewProcess);						 // lpProcessInformation
 
@@ -151,7 +161,7 @@ int main()
 		FALSE,									  // Heran�a de handles
 		CREATE_NEW_CONSOLE,						  // Flags de cria��o
 		NULL,									  // Heran�a do amniente de execu��o
-		"C:\\Windows",							  // Diret�rio do arquivo execut�vel
+		NULL,							  // Diret�rio do arquivo execut�vel
 		&si,									  // lpStartUpInfo
 		&NewProcess);							  // lpProcessInformation
 
@@ -169,10 +179,7 @@ int main()
 		return 0;
 	}
 
-	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
-	SetConsoleTextAttribute(Handle_Console, YELLOW);
-	printf("Finalizando...");
-	ReleaseMutex(Mutex_Acesso_Console);
+	MostrarMensagem("Finalizando...", AMARELO);
 
 	CloseHandle(Handle_Thread_Sistema_Inspecao_Defeitos);
 	CloseHandle(Handle_Thread_Captura_Defeitos_Tiras);
@@ -201,6 +208,6 @@ int main()
 
 	CloseHandle(Mutex_Acesso_Lista_Circular);
 
-	SetConsoleTextAttribute(Handle_Console, WHITE);
+	SetConsoleTextAttribute(Handle_Console, BRANCO);
 	return 0;
 }
