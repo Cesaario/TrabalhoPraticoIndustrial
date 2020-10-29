@@ -6,9 +6,7 @@
 #include "ListaCircular.h"
 #include "DadosDeProcesso.h"
 #include "Mensagens.h"
-
-int Ponteiro_Leitura_Dados = 0;
-int Ponteiro_Escrita_Arquivos = 0;
+#include <iostream>
 
 #define TAMANHO_ARQUIVO 46
 
@@ -29,6 +27,7 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 	HANDLE Semaforo_Arquivo_Dados_Processo_Livre = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Arquivo_Dados_Processo_Livre");
 	HANDLE Evento_Arquivo_Nao_Cheio = OpenEvent(SYNCHRONIZE, false, "Evento_Arquivo_Nao_Cheio");
+	HANDLE Mutex_Acesso_Arquivo = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Arquivo");
 
 	HANDLE Mutex_Acesso_Console = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Console");
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -56,6 +55,9 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 
 	ConnectNamedPipe(Pipe_Dados_De_Processo, NULL);
 
+	int Ponteiro_Escrita_Arquivos = 0;
+	int Ponteiro_Leitura_Dados = 0;
+
 	do {
 		WaitForSingleObject(Evento_Desbloquear_Dados_De_Processo, INFINITE);
 		
@@ -81,14 +83,15 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 		if (dados.tipo == 22) {
 			Lista_Circular_Memoria[Ponteiro_Leitura_Dados % TAMANHO_LISTA] = "";
 			
-			std::ostringstream Mensagem_Stream;
+			/* std::ostringstream Mensagem_Stream;
 			Mensagem_Stream << "[TIPO 22] Mensagem consumida! Posicao: " << Ponteiro_Leitura_Dados % TAMANHO_LISTA;
-			MostrarMensagem(Mensagem_Stream.str(), VERDE);
+			MostrarMensagem(Mensagem_Stream.str(), VERDE); */
 
 			DWORD Bytes_Escritos;
 
-			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
+			WaitForSingleObject(Mutex_Acesso_Arquivo, INFINITE);
 			LockFile(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, sizeof(char) * TAMANHO_ARQUIVO, NULL);
+			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
 			WriteFile(
 				Arquivo_Dados_De_Processo,
 				Proxima_Mensagem_Da_Fila.c_str(),
@@ -96,7 +99,9 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 				&Bytes_Escritos,
 				NULL
 			);
+			std::cout << Proxima_Mensagem_Da_Fila << std::endl;
 			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, sizeof(char) * TAMANHO_ARQUIVO, NULL);
+			ReleaseMutex(Mutex_Acesso_Arquivo);
 
 			char Mensagem_Novos_Dados = '1';
 			WriteFile(

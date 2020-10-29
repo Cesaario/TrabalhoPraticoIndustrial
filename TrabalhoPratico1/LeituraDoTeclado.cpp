@@ -9,7 +9,7 @@
 
 #define	ESC 0x1B
 #define DESBLOQUEADA true
-#define BLOQUEADA false;
+#define BLOQUEADA false
 
 int tecla = 0;
 
@@ -70,30 +70,38 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 
 	ConnectNamedPipe(Pipe_Limpar_Tela, NULL);
 
-	//TODO: Tratamento de erros.
+	WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
+	SetConsoleTextAttribute(Handle_Console, CIANO);
+	printf("--------------------------------------------------\n");
+	SetConsoleTextAttribute(Handle_Console, VERDE);
+	printf("Trabalho Pratico de Automacao em Tempo Real\n");
+	SetConsoleTextAttribute(Handle_Console, CIANO);
+	Mostrar_Comandos_Ajuda();
+	printf("--------------------------------------------------\n");
+	ReleaseMutex(Mutex_Acesso_Console);
 
 	do{
 		tecla = _getch();
 
 		switch (tecla) {
 		case 'i':
-			MostrarMensagem("Alternando tarefa de inspecao de defeitos...", CIANO);
+			MostrarMensagem(Gerar_Mensagem_Bloqueio_Desbloqueio(Estado_Inspecao_Defeitos, "inspecao de defeitos"), CIANO);
 			AlternarEvento(Evento_Desbloquear_Inspecao_Defeitos, &Estado_Inspecao_Defeitos);
 			break;
 		case 'd':
-			MostrarMensagem("Alternando tarefa de defeitos das tiras...", CIANO);
+			MostrarMensagem(Gerar_Mensagem_Bloqueio_Desbloqueio(Estado_Defeitos_Das_Tiras, "captura de defeitos das tiras"), CIANO);
 			AlternarEvento(Evento_Desbloquear_Defeitos_Das_Tiras, &Estado_Defeitos_Das_Tiras);
 			break;
 		case 'e':
-			MostrarMensagem("Alternando tarefa de dados de processo...", CIANO);
+			MostrarMensagem(Gerar_Mensagem_Bloqueio_Desbloqueio(Estado_Dados_De_Processo, "captura de dados de processo"), CIANO);
 			AlternarEvento(Evento_Desbloquear_Dados_De_Processo, &Estado_Dados_De_Processo);
 			break;
 		case 'a':
-			MostrarMensagem("Alternando tarefa de exibicao de defeitos...", CIANO);
+			MostrarMensagem(Gerar_Mensagem_Bloqueio_Desbloqueio(Estado_Exibicao_De_Defeitos, "exibicao de defeitos"), CIANO);
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Defeitos, &Estado_Exibicao_De_Defeitos);
 			break;
 		case 'l':
-			MostrarMensagem("Alternando tarefa de exibicao de dados...", CIANO);
+			MostrarMensagem(Gerar_Mensagem_Bloqueio_Desbloqueio(Estado_Exibicao_De_Dados, "exibicao de dados"), CIANO);
 			AlternarEvento(Evento_Desbloquear_Exibicao_De_Dados, &Estado_Exibicao_De_Dados);
 			break;
 		case 'c':
@@ -114,19 +122,12 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 		default:
 			WaitForSingleObject(Mutex_Acesso_Console, INFINITE);
 			SetConsoleTextAttribute(Handle_Console, VERMELHO);
-			printf("-----------------------\n");
+			printf("--------------------------------------------------\n");
 			SetConsoleTextAttribute(Handle_Console, VERMELHO_ESCURO);
 			printf("Comando nao recohecido!\n");
 			SetConsoleTextAttribute(Handle_Console, VERMELHO);
-			printf("i: Alterna a tarefa de inspecao de defeitos\n");
-			printf("d: Alterna a tarefa de captura de mensagens de defeitos de tiras\n");
-			printf("e: Alterna a tarefa de captura de mensagens de dados de processo\n");
-			printf("a: Alterna a tarefa de exibicao de defeitos de tiras\n");
-			printf("l: Alterna a tarefa de exibicao de dados de processo\n");
-			printf("c: Limpa a janela de console da tarefa de exibicao de dados de processo\n");
-			printf("v: Mostra uma snapshot da lista circular em memoria\n");
-			printf("ESC: Encerra o programa\n");
-			printf("-----------------------\n");
+			Mostrar_Comandos_Ajuda();
+			printf("--------------------------------------------------\n");
 			ReleaseMutex(Mutex_Acesso_Console);
 		}
 
@@ -175,4 +176,22 @@ void AlternarEvento(HANDLE evento, bool* Estado_Atual) {
 		SetEvent(evento);
 		*Estado_Atual = DESBLOQUEADA;
 	}
+}
+
+void Mostrar_Comandos_Ajuda() {
+	printf("i: Alterna a tarefa de inspecao de defeitos\n");
+	printf("d: Alterna a tarefa de captura de mensagens de defeitos de tiras\n");
+	printf("e: Alterna a tarefa de captura de mensagens de dados de processo\n");
+	printf("a: Alterna a tarefa de exibicao de defeitos de tiras\n");
+	printf("l: Alterna a tarefa de exibicao de dados de processo\n");
+	printf("c: Limpa a janela de console da tarefa de exibicao de dados de processo\n");
+	printf("v: Mostra uma snapshot da lista circular em memoria\n");
+	printf("ESC: Encerra o programa\n");
+}
+
+std::string Gerar_Mensagem_Bloqueio_Desbloqueio(bool status, char *tarefa) {
+	if (status == DESBLOQUEADA) {
+		return std::string("Bloqueando tarefa de ") + std::string(tarefa);
+	}
+	return std::string("Desbloqueando tarefa de ") + std::string(tarefa);
 }

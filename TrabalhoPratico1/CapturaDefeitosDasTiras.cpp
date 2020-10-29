@@ -56,9 +56,10 @@ DWORD WINAPI Thread_Captura_Defeitos_Tiras(LPVOID thread_arg) {
 		if (defeito.tipo == 11) {
 			Lista_Circular_Memoria[Ponteiro_Leitura_Defeitos % TAMANHO_LISTA] = "";
 
-			std::ostringstream Mensagem_Stream;
+			/* std::ostringstream Mensagem_Stream;
 			Mensagem_Stream << "[TIPO 11] Mensagem consumida! Posicao: " << Ponteiro_Leitura_Defeitos % TAMANHO_LISTA;
-			MostrarMensagem(Mensagem_Stream.str(), AZUL);
+			MostrarMensagem(Mensagem_Stream.str(), AZUL); */
+
 			DWORD Bytes_Escritos;
 			WriteFile(
 				Pipe_Defeitos_Das_Tiras,

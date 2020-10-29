@@ -55,6 +55,7 @@ HANDLE Evento_Timer_Defeitos_Tiras_Executado;
 
 HANDLE Semaforo_Arquivo_Dados_Processo_Livre;
 HANDLE Evento_Arquivo_Nao_Cheio;
+HANDLE Mutex_Acesso_Arquivo;
 
 HANDLE Handle_Console;
 
@@ -95,6 +96,7 @@ int main()
 
 	Evento_Timer_Dados_Processo_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Dados_Processo_Executado");
 	Evento_Timer_Defeitos_Tiras_Executado = CreateEvent(NULL, FALSE, FALSE, "Evento_Timer_Defeitos_Tiras_Executado");
+	Mutex_Acesso_Arquivo = CreateMutex(NULL, FALSE, "Mutex_Acesso_Arquivo");
 
 	Semaforo_Arquivo_Dados_Processo_Livre = CreateSemaphore(NULL, 100, 100, "Semaforo_Arquivo_Dados_Processo_Livre");
 	//Semaforo_Arquivo_Dados_Processo_Ocupado = CreateSemaphore(NULL, 10, 10, "Semaforo_Arquivo_Dados_Processo_Ocupado");

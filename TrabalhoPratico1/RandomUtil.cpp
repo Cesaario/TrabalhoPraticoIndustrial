@@ -11,7 +11,7 @@ std::string GerarIdAleatorio(int Tipo_Mensagem) {
 	int Tamanho_Letras = Tipo_Mensagem == MENSAGEM_DEFEITO ? 2 : 3;
 	int Tamanho_Numeros = 4;
 
-	srand(time(NULL));
+
 	for (int i = 0; i < Tamanho_Letras; i++)
 		Random_Id += caracteres[rand() % (sizeof(caracteres) - 1)];
 

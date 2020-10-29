@@ -60,9 +60,9 @@ void Adicionar_Mensagem_Na_Lista(std::string mensagem) {
 
 	Lista_Circular_Memoria[GetPosicaoPonteiro()] = mensagem;
 
-	std::ostringstream Mensagem_Stream;
+	/*std::ostringstream Mensagem_Stream;
 	Mensagem_Stream << "Mensagem \"" << mensagem << "\" adicionada na posicao " << GetPosicaoPonteiro() << " da lista.";
-	MostrarMensagem(Mensagem_Stream.str(), BRANCO);
+	MostrarMensagem(Mensagem_Stream.str(), BRANCO);*/
 
 	IncrementarPosicaoPonteiro();
 	ReleaseMutex(Mutex_Acesso_Lista_Circular);

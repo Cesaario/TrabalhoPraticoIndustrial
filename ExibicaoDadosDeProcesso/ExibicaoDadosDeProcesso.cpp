@@ -44,10 +44,6 @@ int main()
 	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(Handle_Console, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 
-	TCHAR NPath[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH, NPath);
-	printf("DIR: %s\n", NPath);
-
 	DWORD resultadoEvento = 0;
 	DWORD resultadoWait = 0;
 
@@ -56,8 +52,8 @@ int main()
 	HANDLE Evento_Limpar_Janela = OpenEvent(SYNCHRONIZE, false, "Evento_Limpar_Janela");
 
 	HANDLE Semaforo_Arquivo_Dados_Processo_Livre = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Arquivo_Dados_Processo_Livre");
-	printf("%d", GetLastError());
 	HANDLE Evento_Arquivo_Nao_Cheio = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Arquivo_Nao_Cheio");
+	HANDLE Mutex_Acesso_Arquivo = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Arquivo");
 
 	HANDLE Handles_Tarefa_Exibicao_De_Dados[] = { Evento_Limpar_Janela, Evento_Desbloquear_Exibicao_De_Dados };
 
@@ -102,8 +98,9 @@ int main()
 		ReadFile(Pipe_Dados_De_Processo, &Buffer_Mensagem_Pipe, sizeof(char), NULL, NULL);
 
 		if (Buffer_Mensagem_Pipe == '1') {
-			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
+			//WaitForSingleObject(Mutex_Acesso_Arquivo, INFINITE);
 			LockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
+			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
 			DWORD Bytes_Lidos;
 			char Mensagem_Arquivo[TAMANHO_ARQUIVO];
 			bool res = ReadFile(
@@ -115,6 +112,7 @@ int main()
 			);
 			std::cout << std::string(Mensagem_Arquivo) << std::endl;
 			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
+			ReleaseMutex(Mutex_Acesso_Arquivo);
 
 			Ponteiro_Leitura_Arquivo = (Ponteiro_Leitura_Arquivo + 1) % 100;
 
