@@ -35,8 +35,6 @@ DWORD WINAPI Thread_Leitura_Teclado(LPVOID thread_arg) {
 	HANDLE Evento_Lista_Circular_Contem_Dado_Processo = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Dado_Processo");
 	HANDLE Evento_Lista_Circular_Contem_Defeito = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Lista_Circular_Contem_Defeito");
 
-	HANDLE Evento_Limpar_Janela = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Limpar_Janela");
-
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
 	HANDLE Evento_Timer_Dados_Processo_Executado = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Timer_Dados_Processo_Executado");

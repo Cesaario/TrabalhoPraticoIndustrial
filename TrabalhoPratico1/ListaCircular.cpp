@@ -49,6 +49,9 @@ void Print_Snapshot_Lista(HANDLE Mutex_Acesso_Console, HANDLE Handle_Console) {
 
 
 void Adicionar_Mensagem_Na_Lista(std::string mensagem) {
+
+	int iteracoes = 0;
+
 	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
 
 	WaitForSingleObject(Mutex_Acesso_Lista_Circular, INFINITE);
@@ -56,6 +59,11 @@ void Adicionar_Mensagem_Na_Lista(std::string mensagem) {
 	while (Mensagem_Atual.size() != 0) {
 		IncrementarPosicaoPonteiro();
 		Mensagem_Atual = Lista_Circular_Memoria[GetPosicaoPonteiro()];
+		iteracoes++;
+		if (iteracoes > 200) {
+			ReleaseMutex(Mutex_Acesso_Lista_Circular);
+			return;
+		}
 	};
 
 	Lista_Circular_Memoria[GetPosicaoPonteiro()] = mensagem;

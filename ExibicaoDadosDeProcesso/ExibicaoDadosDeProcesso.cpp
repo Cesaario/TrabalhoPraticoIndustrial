@@ -29,10 +29,15 @@ DWORD WINAPI Thread_Limpeza_Tela(LPVOID thread_arg) {
 		NULL
 	);
 
+	HANDLE Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
+
 	while (!Finalizar) {
 		char Buffer_Mensagem_Pipe;
 		ReadFile(Pipe_Limpar_Tela, &Buffer_Mensagem_Pipe, sizeof(char), NULL, NULL);
 		system("cls");
+		SetConsoleTextAttribute(Handle_Console, FOREGROUND_INTENSITY);
+		std::cout << "Tela limpa!" << std::endl;
+		SetConsoleTextAttribute(Handle_Console, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	}
 
 	_endthreadex((DWORD)6);
@@ -50,13 +55,12 @@ int main()
 
 	HANDLE Evento_Nao_Finalizar_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE, false, "Evento_Nao_Finalizar_Exibicao_De_Dados");
 	HANDLE Evento_Desbloquear_Exibicao_De_Dados = OpenEvent(SYNCHRONIZE, false, "Evento_Desbloquear_Exibicao_De_Dados");
-	HANDLE Evento_Limpar_Janela = OpenEvent(SYNCHRONIZE, false, "Evento_Limpar_Janela");
 
 	HANDLE Semaforo_Arquivo_Dados_Processo_Livre = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, false, "Semaforo_Arquivo_Dados_Processo_Livre");
 	HANDLE Evento_Arquivo_Nao_Cheio = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Arquivo_Nao_Cheio");
 	HANDLE Mutex_Acesso_Arquivo = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Arquivo");
 
-	HANDLE Handles_Tarefa_Exibicao_De_Dados[] = { Evento_Limpar_Janela, Evento_Desbloquear_Exibicao_De_Dados };
+	HANDLE Handles_Tarefa_Exibicao_De_Dados[] = { Evento_Desbloquear_Exibicao_De_Dados };
 
 	DWORD dwThreadID;
 	Handle_Thread_Limpeza_Tela = (HANDLE)_beginthreadex(
@@ -93,7 +97,7 @@ int main()
 	int contador = 0;
 
 	do {
-		resultadoWait = WaitForMultipleObjects(2, Handles_Tarefa_Exibicao_De_Dados, FALSE, INFINITE);
+		resultadoWait = WaitForSingleObject(Evento_Desbloquear_Exibicao_De_Dados, INFINITE);
 		
 		char Buffer_Mensagem_Pipe;
 		ReadFile(Pipe_Dados_De_Processo, &Buffer_Mensagem_Pipe, sizeof(char), NULL, NULL);
@@ -113,14 +117,14 @@ int main()
 			);
 
 			std::string Mensagem_Formatada = FormatarDadosProcesso(DesserializarDadosProcesso(Mensagem_Arquivo));
-
 			std::cout << Mensagem_Formatada << std::endl;
+
 			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
 			ReleaseMutex(Mutex_Acesso_Arquivo);
 
 			Ponteiro_Leitura_Arquivo = (Ponteiro_Leitura_Arquivo + 1) % 100;
 
-			int status = ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
+			ReleaseSemaphore(Semaforo_Arquivo_Dados_Processo_Livre, 1, NULL);
 			SetEvent(Evento_Arquivo_Nao_Cheio);
 		}
 

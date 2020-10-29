@@ -47,14 +47,15 @@ void Criar_Timer_Dados_Processo(HANDLE* Temporizador_Dados_Processo, HANDLE* Fil
 		*Fila_Temporizadores,
 		(WAITORTIMERCALLBACK)Rotina_Mensagem_Dados_Processo,
 		NULL,
-		500,
+		100,
 		0,
 		WT_EXECUTEDEFAULT
 	);
 }
 
 void Criar_Timer_Defeitos_Tiras(HANDLE* Temporizador_Defeito_Tira, HANDLE* Fila_Temporizadores) {
-	int tempo = 100 + (rand() % 1900);
+	//int tempo = 100 + (rand() % 1900);
+	int tempo = 250;
 	CreateTimerQueueTimer(
 		Temporizador_Defeito_Tira,
 		*Fila_Temporizadores,
@@ -83,6 +84,8 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 	HANDLE Evento_Timer_Dados_Processo_Executado = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Timer_Dados_Processo_Executado");
 	HANDLE Evento_Timer_Defeitos_Tiras_Executado = OpenEvent(SYNCHRONIZE | EVENT_MODIFY_STATE, false, "Evento_Timer_Defeitos_Tiras_Executado");
 
+	HANDLE Mutex_Acesso_Lista_Circular = OpenMutex(SYNCHRONIZE | MUTEX_MODIFY_STATE, false, "Mutex_Acesso_Lista_Circular");
+
 	HANDLE Fila_Temporizadores = CreateTimerQueue();
 	HANDLE Temporizador_Dados_Processo;
 	HANDLE Temporizador_Defeito_Tira;
@@ -102,7 +105,7 @@ DWORD WINAPI Thread_Sistema_Inspecao_Defeitos(LPVOID thread_arg) {
 		int Status_Wait_Lista_Livre = WaitForSingleObject(Semaforo_Acesso_Lista_Circular_Livres, 0);
 		if (Status_Wait_Lista_Livre == WAIT_TIMEOUT) {
 			MostrarMensagem("Lista circular cheia!!!", VERMELHO);
-
+			ReleaseMutex(Mutex_Acesso_Lista_Circular);
 			WaitForSingleObject(Evento_Lista_Circular_Nao_Cheia, INFINITE);
 			continue;
 		}

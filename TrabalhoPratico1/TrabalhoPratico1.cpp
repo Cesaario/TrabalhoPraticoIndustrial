@@ -89,8 +89,6 @@ int main()
 	Evento_Lista_Circular_Contem_Dado_Processo = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Dado_Processo");
 	Evento_Lista_Circular_Contem_Defeito = CreateEvent(NULL, FALSE, FALSE, "Evento_Lista_Circular_Contem_Defeito");
 
-	Evento_Limpar_Janela = CreateEvent(NULL, FALSE, FALSE, "Evento_Limpar_Janela");
-
 	Mutex_Acesso_Lista_Circular = CreateMutex(NULL, FALSE, "Mutex_Acesso_Lista_Circular");
 	Mutex_Acesso_Console = CreateMutex(NULL, FALSE, "Mutex_Acesso_Console");
 
@@ -99,7 +97,6 @@ int main()
 	Mutex_Acesso_Arquivo = CreateMutex(NULL, FALSE, "Mutex_Acesso_Arquivo");
 
 	Semaforo_Arquivo_Dados_Processo_Livre = CreateSemaphore(NULL, 100, 100, "Semaforo_Arquivo_Dados_Processo_Livre");
-	//Semaforo_Arquivo_Dados_Processo_Ocupado = CreateSemaphore(NULL, 10, 10, "Semaforo_Arquivo_Dados_Processo_Ocupado");
 	Evento_Arquivo_Nao_Cheio = CreateEvent(NULL, FALSE, FALSE, "Evento_Arquivo_Nao_Cheio");
 
 	Handle_Console = GetStdHandle(STD_OUTPUT_HANDLE);
