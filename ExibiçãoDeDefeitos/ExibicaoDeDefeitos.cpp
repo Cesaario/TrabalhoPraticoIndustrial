@@ -4,6 +4,8 @@
 #include <conio.h>
 #include <errno.h>
 #include <string>
+#include <iostream>
+#include "DefeitoSuperficieTira.h"
 
 #define TAMANHO_MENSAGEM 37
 
@@ -44,7 +46,9 @@ int main()
 			NULL
 		);
 
-		printf("%s\n", Mensagem_Lida);
+		std::string Mensagem_Formatada = FormatarDefeitoTira(DesserializarDefeitoTira(Mensagem_Lida));
+
+		std::cout << Mensagem_Formatada << std::endl;
 
 		resultadoEvento = WaitForSingleObject(Evento_Nao_Finalizar_Exibicao_De_Defeitos, 0);
 	} while (resultadoEvento == WAIT_OBJECT_0);

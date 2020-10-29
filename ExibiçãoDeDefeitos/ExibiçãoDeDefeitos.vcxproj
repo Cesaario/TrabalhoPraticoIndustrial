@@ -140,7 +140,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DefeitoSuperficieTira.cpp" />
     <ClCompile Include="ExibicaoDeDefeitos.cpp" />
+    <ClCompile Include="RandomUtil.cpp" />
+    <ClCompile Include="Tempo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DefeitoSuperficieTira.h" />
+    <ClInclude Include="RandomUtil.h" />
+    <ClInclude Include="Tempo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

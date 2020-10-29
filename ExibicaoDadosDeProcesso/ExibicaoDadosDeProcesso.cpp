@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <string>
 #include <iostream>
+#include "DadosDeProcesso.h"
 
 #define TAMANHO_ARQUIVO 46
 
@@ -98,7 +99,7 @@ int main()
 		ReadFile(Pipe_Dados_De_Processo, &Buffer_Mensagem_Pipe, sizeof(char), NULL, NULL);
 
 		if (Buffer_Mensagem_Pipe == '1') {
-			//WaitForSingleObject(Mutex_Acesso_Arquivo, INFINITE);
+			WaitForSingleObject(Mutex_Acesso_Arquivo, INFINITE);
 			LockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
 			SetFilePointer(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, NULL, FILE_BEGIN);
 			DWORD Bytes_Lidos;
@@ -110,7 +111,10 @@ int main()
 				&Bytes_Lidos,
 				NULL
 			);
-			std::cout << std::string(Mensagem_Arquivo) << std::endl;
+
+			std::string Mensagem_Formatada = FormatarDadosProcesso(DesserializarDadosProcesso(Mensagem_Arquivo));
+
+			std::cout << Mensagem_Formatada << std::endl;
 			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Leitura_Arquivo * sizeof(char) * TAMANHO_ARQUIVO, 0, (Ponteiro_Leitura_Arquivo + 1) * sizeof(char) * TAMANHO_ARQUIVO, 0);
 			ReleaseMutex(Mutex_Acesso_Arquivo);
 

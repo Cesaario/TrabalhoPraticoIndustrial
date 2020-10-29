@@ -99,7 +99,6 @@ DWORD WINAPI Thread_Captura_Dados_Processos(LPVOID thread_arg) {
 				&Bytes_Escritos,
 				NULL
 			);
-			std::cout << Proxima_Mensagem_Da_Fila << std::endl;
 			UnlockFile(Arquivo_Dados_De_Processo, Ponteiro_Escrita_Arquivos * sizeof(char) * TAMANHO_ARQUIVO, NULL, sizeof(char) * TAMANHO_ARQUIVO, NULL);
 			ReleaseMutex(Mutex_Acesso_Arquivo);
 
